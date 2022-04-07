@@ -5,10 +5,11 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^8.0",
-        "cviebrock/eloquent-sluggable": "^9.0",
-        "flipbox/lumen-generator": "^9.0",
-        "laravel/lumen-framework": "^9.0"
+        "php": "^7.3|^8.0",
+        "cviebrock/eloquent-sluggable": "^8.0",
+        "flipbox/lumen-generator": "^8.0",
+        "laravel/lumen-framework": "8.2.4",
+        "tymon/jwt-auth": "dev-develop"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
