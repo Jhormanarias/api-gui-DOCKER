@@ -17,7 +17,7 @@ services:
     working_dir: /var/www/
     volumes:
       - ./api:/var/www/
-      - ./api/:/var/www/html/
+      - ./api/public/:/var/www/html/
     ports:
       - 8000:80
     depends_on:
