@@ -342,7 +342,7 @@ export const PokemonContextProvider = ({ children }) => {
   //Para Mandar el comentario----------------------------------------------------
 
   //Para eliminar el comentario----------------------------------------------------
-  const deleteComment = (id) => {
+  const deleteComment = async (id) => {
     return axios
       .delete(`${process.env.REACT_APP_HOST_LUMEN_API}/deletecomment/${id}`)
 
@@ -361,24 +361,25 @@ export const PokemonContextProvider = ({ children }) => {
       });
   };
 
-  const onclickDeleteComment = (id) => {
-    console.log(id);
+  const onclickDeleteComment = async (id) => {
     swal({
       title: "Eliminar",
       text: "Estas seguro de eliminar?",
       icon: "warning",
       buttons: ["No", "Si"],
-    }).then((respuesta) => {
+    }).then(async (respuesta) => {
       if (respuesta) {
-        deleteComment(id);
-        swal({
-          title: "Correcto",
-          text: "Comentario Eliminado :) ",
-          icon: "success",
-          button: "Aceptar",
-          timer: "2000",
-        });
-        setpost({ ...post, status: "Noloaded", modalPost: "none" });
+        let onDeleteComment = await deleteComment(id);
+        if (onDeleteComment) {
+          setpost({...post, status: "Noloaded" });
+          swal({
+            title: "Correcto",
+            text: "Comentario Eliminado :) ",
+            icon: "success",
+            button: "Aceptar",
+            timer: "2000",
+          });
+        }
       }
     });
   };

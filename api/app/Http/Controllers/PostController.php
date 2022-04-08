@@ -30,10 +30,11 @@ class PostController extends ResourceController
 
     public function store(Request $request)
     {
-        $this->validate($request,[
+        $rules = [
             'title' => 'required|unique:post|max:255',
             'body' => 'required',
-        ]);
+        ];
+        $this->validate($request, $rules);
 
         return parent::store($request);
     }
