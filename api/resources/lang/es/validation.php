@@ -146,6 +146,9 @@ return [
     'attributes' => [
         'title' => 'titulo',
         'body' => 'cuerpo',
+        'email' => 'correo',
+        'name' => 'nombre',
+        'password' => 'contraseña',
     ],
 
 ];

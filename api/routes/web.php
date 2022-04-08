@@ -25,6 +25,7 @@ $router->get("/comment/{id}", "CommentController@show");
 $router->get("/allcomments", "CommentController@index");
 $router->post("/createcomment", "CommentController@store");
 $router->delete("/deletecomment/{id}", "CommentController@delete");
+$router->post("/createuser", "UserController@store");
 
 /* function resource($prefix, $controller, $router)
 {
