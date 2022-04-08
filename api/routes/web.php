@@ -18,14 +18,23 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->get("/allposts", "PostController@index");
-$router->get("/post/{id}", "PostController@show");
-$router->post("/createpost", "PostController@store");
-$router->get("/comment/{id}", "CommentController@show");
-$router->get("/allcomments", "CommentController@index");
-$router->post("/createcomment", "CommentController@store");
-$router->delete("/deletecomment/{id}", "CommentController@delete");
-$router->post("/createuser", "UserController@store");
+
+// API route group
+$router->group(['prefix' => 'api'], function () use ($router) {
+    // Matches "/api/register
+    $router->post("createuser", "UserController@store");
+    $router->get("allposts", "PostController@index");
+    $router->get("post/{id}", "PostController@show");
+    $router->post("createpost", "PostController@store");
+    $router->get("comment/{id}", "CommentController@show");
+    $router->get("allcomments", "CommentController@index");
+    $router->post("createcomment", "CommentController@store");
+    $router->delete("deletecomment/{id}", "CommentController@delete");
+ });
+
+
+
+
 
 /* function resource($prefix, $controller, $router)
 {
