@@ -21,7 +21,7 @@ const Login = () => {
   }
   return (
     <div className="container-fluid col-md-6 border mt-5 mb-5">
-      <h1>Login</h1>
+      <h1>Crear usuario</h1>
 
       <form>
       <div className="mb-3">
