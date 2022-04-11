@@ -1,7 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import swal from 'sweetalert';
+
 
 export const NavBar = () => {
+    const onClickSingOut = ()=>{
+        localStorage.setItem('Token', null);
+        swal({
+            icon: "success",
+            title: "Todo bien",
+            text: `Haz cerrado sesión :)`,
+            timer: "5000",
+        });
+        window.location = '/login';
+    }
     return (
         <div>
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -17,6 +29,7 @@ export const NavBar = () => {
                             <Link className="nav-link" to="/">Inicio</Link>
                             <Link className="nav-link" to="/pokemon">Pokemon</Link>
                             <Link className="nav-link" to="/items">Items</Link>
+                            <button type="button" class="btn btn-dark nav-link" onClick={()=>{onClickSingOut()}}>Cerrar sesión</button>
                         </div>
                     </div>
                 </div>
