@@ -6,9 +6,10 @@ import { Inicio } from './components/pages/Inicio';
 import { Pokemon } from './components/pages/Pokemon';
 import { Items} from './components/pages/Items';
 import { PokemonContextProvider } from './contexts/PokemonContext';
-import Login from './components/pages/Login';
+import { CreateUser } from './components/pages/CreateUser';
 import { AuthContextProvider } from './contexts/AuthContext';
 import { AuthContext } from "./contexts/AuthContext";
+import { Login } from './components/pages/Login';
 
 
 
@@ -19,10 +20,10 @@ function App() {
     {},
   ] = useContext(AuthContext) */
 
-  let loginAuth = false;
+  /* let loginAuth = true; */
   
 
-  const logOrApp = ()=>{
+  /* const logOrApp = ()=>{
     if (loginAuth) {
       return(
         <div className="App">
@@ -50,7 +51,32 @@ function App() {
     }
   };
 
-  return logOrApp();
+  return logOrApp(); */
+
+  return (
+    <div className="App">
+      
+      <Router>
+        <NavBar/>
+        <Switch>
+          <PokemonContextProvider>
+          <Route path='/' exact component={Inicio} />
+          <Route path='/pokemon' component={Pokemon} />
+          <Route path='/items' component={Items} />
+          </PokemonContextProvider>
+        
+        </Switch>
+        <AuthContextProvider>
+            <CreateUser path='/createuser' component={CreateUser}/>
+            <Login path='/login' component={Login}/>
+        </AuthContextProvider>
+      </Router>
+
+    </div>
+  );
+
+
+
 }
 
 export default App;

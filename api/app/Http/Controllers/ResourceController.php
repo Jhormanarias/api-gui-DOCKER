@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Exception;
 
+
 abstract class ResourceController extends Controller
 {
     protected $model;
@@ -38,9 +39,8 @@ abstract class ResourceController extends Controller
                 'id' => 'numeric'
             ]);
             $model->save();
-
-        return $model;
-        }
+        //return successful response
+        return response()->json(['user' => $model, 'message' => 'CREATED'], 201);}
         catch(\Exception $e){
             return response()->json(
                 [

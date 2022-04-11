@@ -18,10 +18,9 @@ export const Items = () => {
           <div key={post.id}>
             <div className="card text-white bg-dark mb-3">
               <div class="card-header">
-                <h5 className="card-title">Post</h5>
+                <h5 className="card-title">{post.title}</h5>
               </div>
               <div className="card-body">
-                <h5 className="card-title">{post.title}</h5>
                 <p className="card-text">{post.body}</p>
               </div>
             </div>

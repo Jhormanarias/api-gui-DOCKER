@@ -176,27 +176,49 @@ export const PokemonContextProvider = ({ children }) => {
   };
   //FiltroNPokemon---------------------------------------------------------------------
 
+  //Esto es para saber si el localStorage esta disponible
+
+    /* if (typeof(Storage) !== "undefined") {
+      console.log('LocalStorage disponible');
+      // LocalStorage disponible
+  } else {
+      console.log('LocalStorage ---NO--- disponible');
+      // LocalStorage no soportado en este navegador
+  } */
+
+  // localStorage.setItem("Token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNjQ5NzA5MDMzLCJleHAiOjE2NDk3MTI2MzMsIm5iZiI6MTY0OTcwOTAzMywianRpIjoiTWdOalVxc3huTk90NjdsTSIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.lKyMc9C8WmHzjlRVqWSeH95NDwSteTTG0dMHAYPBTTw");
+
+  //console.log(localStorage.getItem('Token'));
+
   //Para obtener todos los post y comentarios-----------------------------------------
   const getPost = async () => {
+    let config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
     return axios
-      .get(`${process.env.REACT_APP_HOST_LUMEN_API}/allposts`)
+      .get(`${process.env.REACT_APP_HOST_LUMEN_API}/allposts`, config)
 
       .then(({ data }) => {
         return data;
       })
       .catch((e) => {
-        alert("Algo salio mal");
+        if (e.response.status == 401) {
+          swal({title: 'Error!',
+          text: e.response.data.message,
+          icon: 'error'
+          });
+        }
+        else{
+        swal({title: 'Error!',
+        text: 'Algo salio mal en la llamada al servidor',
+        icon: 'error'
+        });
+        }
       });
   };
   //Para obtener todos los post y comentarios-----------------------------------------
-
-  //Ocultar y mostrar modal para crear post
-  /* const showHiddenModal = ()=>{
-    setpost({...post,
-              modalPost: "block"})
-    console.log(post.modalPost);
-  } */
-  //Ocultar y mostrar modal para crear post
 
   //Para crear post--------------------------------------------------------------
 
@@ -204,13 +226,20 @@ export const PokemonContextProvider = ({ children }) => {
     setpost({ ...post, title: post.title, body: post.body });
   }, [post.title, post.body]);
 
+  const token = localStorage.getItem('Token');
+
   const postPost = async ({ title, body }) => {
+    let config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
     return axios
       .post(`${process.env.REACT_APP_HOST_LUMEN_API}/createpost`, {
         title,
         body,
         users_id: 1,
-      })
+      }, config)
 
       .then(({ data }) => {
         return data;
@@ -245,8 +274,19 @@ export const PokemonContextProvider = ({ children }) => {
              /* Texto */
             timer: "5000",
           });
-        } else {
-          alert("Algo salio muy mal");
+        }
+        if (e.response.status == 401) {
+          swal({title: 'Error!',
+          text: e.response.data.message,
+          icon: 'error'
+          });
+        }
+        
+        else {
+          swal({title: 'Error!',
+          text: 'Algo salio mal en la llamada al servidor',
+          icon: 'error'
+          });
         }
       });
   };
@@ -295,13 +335,18 @@ export const PokemonContextProvider = ({ children }) => {
 
   //Para Mandar el comentario----------------------------------------------------
   const postComment = async ({ comment, comment_id, post_id }) => {
+    let config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
     return axios
       .post(`${process.env.REACT_APP_HOST_LUMEN_API}/createcomment`, {
         comment,
         comment_id,
         post_id,
         users_id: 1,
-      })
+      }, config)
 
       .then(({ data }) => {
         return data;
@@ -309,11 +354,21 @@ export const PokemonContextProvider = ({ children }) => {
       .catch((e) => {
         if (e.response.status == 422) {
           alert("Error 422");
-        } else {
-          alert("Algo salio mal");
         }
-        console.log(e);
-        console.log(e.response.status);
+        
+        if (e.response.status == 401) {
+          swal({title: 'Error!',
+          text: e.response.data.message,
+          icon: 'error'
+          });
+        }
+        
+        else {
+          swal({title: 'Error!',
+          text: 'Algo salio mal en la llamada al servidor',
+          icon: 'error'
+          });
+        }
       });
   };
 
@@ -356,7 +411,10 @@ export const PokemonContextProvider = ({ children }) => {
         if (e.response.status == 422) {
           return 422;
         } else {
-          return alert("Algo salio muy mal");
+          swal({title: 'Error!',
+          text: 'Algo salio mal en la llamada al servidor',
+          icon: 'error'
+          });
         }
       });
   };

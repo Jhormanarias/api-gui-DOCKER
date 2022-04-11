@@ -1,7 +1,6 @@
-import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { createContext, useState, useEffect } from "react";
+import axios from "axios";
 import swal from "sweetalert";
-
 
 const initialState = {
   user: {
@@ -9,78 +8,78 @@ const initialState = {
     status: "Noloaded",
     name: "",
     email: "",
-    password: ""
+    password: "",
   },
 };
 
-
-
 export const AuthContext = createContext([]);
 
-export const AuthContextProvider = ({ children })=>{
+export const AuthContextProvider = ({ children }) => {
+  //UseState---------------------------------------------------------
+  const [loginAuth, setloginAuth] = useState(false);
+  const [user, setuser] = useState(initialState);
+  //UseState---------------------------------------------------------
 
-    const [loginAuth, setloginAuth] = useState(false);
-    const [user, setuser] = useState(initialState);
+  //useEffect---------------------------------------------------------
+  useEffect(() => {
+    setuser({
+      ...user,
+      name: user.name,
+      email: user.email,
+      password: user.password,
+    });
+    console.log(user);
+  }, [user.name, user.email, user.password]);
+  //useEffect---------------------------------------------------------
 
+  //para crear usuario---------------------------------------------------------
 
-    useEffect(() => {
-      setuser({ ...user, name: user.name, email: user.email, password: user.password });
-      console.log(user);
-    }, [user.name, user.email, user.password]);
+  const postUser = async ({ name, email, password }) => {
+    return axios
+      .post(`${process.env.REACT_APP_HOST_LUMEN_API}/createuser`, {
+        name,
+        email,
+        password,
+      })
 
+      .then(({ data }) => {
+        return data;
+      })
+      .catch((e) => {
+        if (e.response.status == 422) {
+          let dataArray = Object.keys(e.response.data);
 
+          let concatMessage = "";
 
-
-
-    const postUser = async ({ name, email, password }) => {
-      return axios
-        .post(`${process.env.REACT_APP_HOST_LUMEN_API}/createuser`, {
-          name,
-          email,
-          password,
-        })
-  
-        .then(({ data }) => {
-          return data;
-        })
-        .catch((e) => {
-          if (e.response.status == 422) {
-  
-            let dataArray = Object.keys(e.response.data);
-  
-            let concatMessage = '';
-  
-            const concatObjectError = ()=>{
-              dataArray.forEach(field => {
-                concatMessage = concatMessage+'\n'+e.response.data[field][0];
-              });
-            }
-
-            concatObjectError()
-  
-            swal({
-              icon: "error",
-              title: "Oops...",
-              text: `${concatMessage}`,
-              timer: "5000",
+          const concatObjectError = () => {
+            dataArray.forEach((field) => {
+              concatMessage = concatMessage + "\n" + e.response.data[field][0];
             });
-          } else {
-            alert("Algo salio muy mal");
-          }
-        });
-    };
+          };
 
+          concatObjectError();
 
+          swal({
+            icon: "error",
+            title: "Oops...",
+            text: `${concatMessage}`,
+            timer: "5000",
+          });
+        } else {
+          alert("Algo salio muy mal");
+        }
+      });
+  };
 
+    //cuando se da click en crear usuario---------------------------------------------
 
     const onClickCreateUser = async (e) => {
       let createUser = await postUser({
         name: user.name,
         email: user.email,
-        password: user.password
+        password: user.password,
       });
-  
-  
+
       if (createUser) {
         swal({
           icon: "success",
@@ -96,27 +95,103 @@ export const AuthContextProvider = ({ children })=>{
         });
       }
     };
+    //cuando se da click en crear usuario---------------------------------------------
 
 
 
-    const setFieldUser = (value, field) => {
-      setuser({ ...user, [field]: value });
-    };
+  //para crear usuario---------------------------------------------------------
+
+  //Para loguear usuario-----------------------------------------------------------------
+
+  const postLog = async ({ email, password }) => {
+    return axios
+      .post(`${process.env.REACT_APP_HOST_LUMEN_API}/login`, {
+        email,
+        password,
+      })
+
+      .then(({ data }) => {
+      //console.log(data.token);
+      localStorage.setItem('Token', data.token);
+        return data;
+      })
+      .catch((e) => {
+        if (e.response.status == 422) {
+          let dataArray = Object.keys(e.response.data);
+
+          let concatMessage = "";
+
+          const concatObjectError = () => {
+            dataArray.forEach((field) => {
+              concatMessage = concatMessage + "\n" + e.response.data[field][0];
+            });
+          };
+
+          concatObjectError();
+
+          swal({
+            icon: "error",
+            title: "Oops...",
+            text: `${concatMessage}`,
+            timer: "5000",
+          });
+        } 
+        else if (e.response.status == 401) {
+          swal({title: 'Error!',
+          text: e.response.data.message,
+          icon: 'error'
+          });
+        }
+        else{
+          swal({title: 'Error!',
+          text: 'Algo salio mal en la llamada al servidor',
+          icon: 'error'
+          });
+          }
+      });
+  };
+  const onClickSignIn = async ()=>{
+    let logUser = await postLog({
+      email: user.email,
+      password: user.password,
+    });
+    if (logUser) {
+      swal({
+        icon: "success",
+        title: "Todo bien",
+        text: `Logueado correctamente :)`,
+        timer: "5000",
+      });
+      setuser({
+        ...user,
+        email: "",
+        password: "",
+      });
+      window.location = '/items';
+
+    }
+  };
+  
+  //Para loguear usuario-----------------------------------------------------------------
 
 
-    return(
-        <AuthContext.Provider
-        value={[
-          { user, loginAuth},
-          {
-            setloginAuth,
-            onClickCreateUser,
-            setFieldUser
-          },
-        ]}
-      >
-        {children}
-      </AuthContext.Provider>
-    )
+  const setFieldUser = (value, field) => {
+    setuser({ ...user, [field]: value });
+  };
 
-}
+  return (
+    <AuthContext.Provider
+      value={[
+        { user, loginAuth },
+        {
+          setloginAuth,
+          onClickCreateUser,
+          setFieldUser,
+          onClickSignIn
+        },
+      ]}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
