@@ -28,6 +28,15 @@ class CommentController extends ResourceController
         return response()->json($datos);
     }
 
+    public function store(Request $request)
+    {
+        $rules = [
+            'comment' => 'required|max:255'
+        ];
+        $this->validate($request, $rules);
+
+        return parent::store($request);
+    }
     
     
     /* public function store(Request $request)

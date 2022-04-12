@@ -24,6 +24,11 @@ const initialState = {
     createPostStatus: "",
     modalPost: "none",
   },
+  token: {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('Token')}`
+  }
+}
 };
 
 export const PokemonContext = createContext([]);
@@ -33,6 +38,7 @@ export const PokemonContextProvider = ({ children }) => {
   const [searchPokemon, setsearchPokemon] = useState("");
   const [post, setpost] = useState(initialState.post);
   const [openmodal, setopenmodal] = useState(false);
+  const [tokenState, settokenState] = useState(initialState.token)
 
   useEffect(async () => {
     //Solo se va a ejecutar la peticion cuando el estado pokemon aún no haya cargado
@@ -192,13 +198,8 @@ export const PokemonContextProvider = ({ children }) => {
 
   //Para obtener todos los post y comentarios-----------------------------------------
   const getPost = async () => {
-    let config = {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }
     return axios
-      .get(`${process.env.REACT_APP_HOST_LUMEN_API}/allposts`, config)
+      .get(`${process.env.REACT_APP_HOST_LUMEN_API}/allposts`, tokenState)
 
       .then(({ data }) => {
         return data;
@@ -226,20 +227,13 @@ export const PokemonContextProvider = ({ children }) => {
     setpost({ ...post, title: post.title, body: post.body });
   }, [post.title, post.body]);
 
-  const token = localStorage.getItem('Token');
-
   const postPost = async ({ title, body }) => {
-    let config = {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }
     return axios
       .post(`${process.env.REACT_APP_HOST_LUMEN_API}/createpost`, {
         title,
         body,
         users_id: 1,
-      }, config)
+      }, tokenState)
 
       .then(({ data }) => {
         return data;
@@ -275,7 +269,7 @@ export const PokemonContextProvider = ({ children }) => {
             timer: "5000",
           });
         }
-        if (e.response.status == 401) {
+        else if (e.response.status == 401) {
           swal({title: 'Error!',
           text: e.response.data.message,
           icon: 'error'
@@ -335,28 +329,39 @@ export const PokemonContextProvider = ({ children }) => {
 
   //Para Mandar el comentario----------------------------------------------------
   const postComment = async ({ comment, comment_id, post_id }) => {
-    let config = {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }
     return axios
       .post(`${process.env.REACT_APP_HOST_LUMEN_API}/createcomment`, {
         comment,
         comment_id,
         post_id,
         users_id: 1,
-      }, config)
+      }, tokenState)
 
       .then(({ data }) => {
         return data;
       })
       .catch((e) => {
         if (e.response.status == 422) {
-          alert("Error 422");
+
+          let dataArray = Object.keys(e.response.data);
+
+          let concatMessage = '';
+
+          const concatObjectError = ()=>{
+            dataArray.forEach(field => {
+              concatMessage = concatMessage+'\n'+e.response.data[field][0];
+            });
+          }
+          concatObjectError()
+          swal({
+            icon: "error",
+            title: "Oops...",
+            text: `${concatMessage}`,
+            timer: "5000",
+          });
         }
         
-        if (e.response.status == 401) {
+        else if (e.response.status == 401) {
           swal({title: 'Error!',
           text: e.response.data.message,
           icon: 'error'
@@ -398,13 +403,8 @@ export const PokemonContextProvider = ({ children }) => {
 
   //Para eliminar el comentario----------------------------------------------------
   const deleteComment = async (id) => {
-    let config = {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }
     return axios
-      .delete(`${process.env.REACT_APP_HOST_LUMEN_API}/deletecomment/${id}`,config)
+      .delete(`${process.env.REACT_APP_HOST_LUMEN_API}/deletecomment/${id}`,tokenState)
 
       .then(({ data }) => {
         return data;

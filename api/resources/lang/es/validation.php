@@ -127,8 +127,8 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'comment' => [
+            'required' => 'El campo :attribute no puede estar vacío.',
         ],
     ],
 
@@ -149,6 +149,7 @@ return [
         'email' => 'correo',
         'name' => 'nombre',
         'password' => 'contraseña',
+        'comment' => 'comentario'
     ],
 
 ];
