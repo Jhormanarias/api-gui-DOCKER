@@ -10,6 +10,7 @@ import { CreateUser } from './components/pages/CreateUser';
 import { AuthContextProvider } from './contexts/AuthContext';
 import { AuthContext } from "./contexts/AuthContext";
 import { Login } from './components/pages/Login';
+import { Chat } from './components/pages/Chat';
 
 
 
@@ -37,6 +38,7 @@ function App() {
           <Route path='/' exact component={Inicio} />
           <Route path='/pokemon' component={Pokemon} />
           <Route path='/items' component={Items} />
+          <Route path='/chat' component={Chat} />
           </PokemonContextProvider>
         </Switch>
       </Router>
