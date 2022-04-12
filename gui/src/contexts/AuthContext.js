@@ -1,6 +1,13 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import swal from "sweetalert";
+import appFirebase from "../firebase";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 const initialState = {
   user: {
@@ -12,16 +19,19 @@ const initialState = {
   },
 };
 
+const auth = getAuth(appFirebase);
+//FireStore---------------------------------------------------------------------
+const firestore = getFirestore(appFirebase);
+//FireStore---------------------------------------------------------------------
+
 export const AuthContext = createContext([]);
 
 export const AuthContextProvider = ({ children }) => {
   //UseState---------------------------------------------------------
   const [loginAuth, setloginAuth] = useState(false);
   const [user, setuser] = useState(initialState);
-  const [viewpassword, setviewpassword] = useState(false)
+  const [viewpassword, setviewpassword] = useState(false);
   //UseState---------------------------------------------------------
-
-  //Firebase---------------------------------------------------------------------
 
   //useEffect---------------------------------------------------------
   useEffect(() => {
@@ -34,7 +44,26 @@ export const AuthContextProvider = ({ children }) => {
   }, [user.name, user.email, user.password]);
   //useEffect---------------------------------------------------------
 
-  //para crear usuario---------------------------------------------------------
+  //Para crear usuario en firebase--------------------------------------------------
+  const registroUserFirebase = async () => {
+    const userInfo = await createUserWithEmailAndPassword(
+      auth,
+      user.email,
+      user.password
+    ).then((userFirebase) => {
+      return userFirebase;
+    });
+    console.log(userInfo.user.uid);
+    const docRef = doc(firestore, `usuarios/${userInfo.user.uid}`);
+    console.log(docRef);
+    setDoc(docRef, {
+      name: user.name,
+      email: user.email,
+    });
+  };
+  //Para crear usuario en firebase--------------------------------------------------
+
+  //para crear usuario(API POSTGRES)---------------------------------------------------------
 
   const postUser = async ({ name, email, password }) => {
     return axios
@@ -45,6 +74,8 @@ export const AuthContextProvider = ({ children }) => {
       })
 
       .then(({ data }) => {
+        //Crear usuario en firebase
+        registroUserFirebase();
         return data;
       })
       .catch((e) => {
@@ -73,37 +104,48 @@ export const AuthContextProvider = ({ children }) => {
       });
   };
 
-    //cuando se da click en crear usuario---------------------------------------------
+  //cuando se da click en crear usuario---------------------------------------------
 
-    const onClickCreateUser = async (e) => {
-      let createUser = await postUser({
-        name: user.name,
-        email: user.email,
-        password: user.password,
+  const onClickCreateUser = async (e) => {
+    let createUser = await postUser({
+      name: user.name,
+      email: user.email,
+      password: user.password,
+    });
+
+    if (createUser) {
+      swal({
+        icon: "success",
+        title: "Todo bien",
+        text: `usuario ${user.name} creado correctamente :)`,
+        timer: "5000",
       });
-
-      if (createUser) {
-        swal({
-          icon: "success",
-          title: "Todo bien",
-          text: `usuario ${user.name} creado correctamente :)`,
-          timer: "5000",
-        });
-        setuser({
-          ...user,
-          name: "",
-          email: "",
-          password: "",
-        });
-      }
-    };
-    //cuando se da click en crear usuario---------------------------------------------
-
-
+      setuser({
+        ...user,
+        name: "",
+        email: "",
+        password: "",
+      });
+    }
+  };
+  //cuando se da click en crear usuario---------------------------------------------
 
   //para crear usuario---------------------------------------------------------
 
-  //Para loguear usuario-----------------------------------------------------------------
+  //para loguear en firebase---------------------------------------------------------
+  const logFirebase = async () => {
+    const userInfoLog = await signInWithEmailAndPassword(
+      auth,
+      user.email,
+      user.password
+    ).then((userResponseLog)=>{
+      console.log(userResponseLog);
+    });
+  };
+
+  //para loguear en firebase---------------------------------------------------------
+
+  //Para loguear usuario(API POSTGRES)-----------------------------------------------------------------
 
   const postLog = async ({ email, password }) => {
     return axios
@@ -113,8 +155,8 @@ export const AuthContextProvider = ({ children }) => {
       })
 
       .then(({ data }) => {
-      //console.log(data.token);
-      localStorage.setItem('Token', data.token);
+        //console.log(data.token);
+        localStorage.setItem("Token", data.token);
         return data;
       })
       .catch((e) => {
@@ -137,22 +179,22 @@ export const AuthContextProvider = ({ children }) => {
             text: `${concatMessage}`,
             timer: "5000",
           });
-        } 
-        else if (e.response.status == 401) {
-          swal({title: 'Error!',
-          text: e.response.data.message,
-          icon: 'error'
+        } else if (e.response.status == 401) {
+          swal({
+            title: "Error!",
+            text: e.response.data.message,
+            icon: "error",
+          });
+        } else {
+          swal({
+            title: "Error!",
+            text: "Algo salio mal en la llamada al servidor",
+            icon: "error",
           });
         }
-        else{
-          swal({title: 'Error!',
-          text: 'Algo salio mal en la llamada al servidor',
-          icon: 'error'
-          });
-          }
       });
   };
-  const onClickSignIn = async ()=>{
+  const onClickSignIn = async () => {
     let logUser = await postLog({
       email: user.email,
       password: user.password,
@@ -164,16 +206,16 @@ export const AuthContextProvider = ({ children }) => {
         text: `Logueado correctamente :)`,
         timer: "5000",
       });
+    logFirebase();
       setuser({
         ...user,
         email: "",
         password: "",
       });
-      window.location = '/items';
-
+      window.location = "/items";
     }
   };
-  
+
   //Para loguear usuario-----------------------------------------------------------------
 
   //Para recibir el tipo de valor y el valor de los Input Text------------------------
@@ -183,15 +225,13 @@ export const AuthContextProvider = ({ children }) => {
   //Para recibir el tipo de valor y el valor de los Input Text------------------------
 
   //boton para  ver contraseña-------------------------------------------------
-  const onClickViewPass = ()=>{
-    if(viewpassword)
-    {
-    setviewpassword(false);
+  const onClickViewPass = () => {
+    if (viewpassword) {
+      setviewpassword(false);
+    } else {
+      setviewpassword(true);
     }
-    else{
-    setviewpassword(true);
-    }
-  }
+  };
   //boton para  ver contraseña-------------------------------------------------
 
   return (
@@ -203,7 +243,7 @@ export const AuthContextProvider = ({ children }) => {
           onClickCreateUser,
           setFieldUser,
           onClickSignIn,
-          onClickViewPass
+          onClickViewPass,
         },
       ]}
     >

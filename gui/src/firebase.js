@@ -35,5 +35,5 @@ firebaseConfig = {
 const appFirebase = initializeApp(firebaseConfig);
 const analytics = getAnalytics(appFirebase);
 
-
+//Exportar para usarla en cualquier lado
 export default appFirebase;

@@ -1,11 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import swal from 'sweetalert';
+import { getAuth, signOut } from "firebase/auth";
+import appFirebase from '../../firebase';
+
+const auth = getAuth(appFirebase);
 
 
 export const NavBar = () => {
     const onClickSingOut = ()=>{
         localStorage.setItem('Token', null);
+        signOut(auth);
         swal({
             icon: "success",
             title: "Todo bien",

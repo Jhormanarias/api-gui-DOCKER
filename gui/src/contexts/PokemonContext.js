@@ -466,18 +466,7 @@ export const PokemonContextProvider = ({ children }) => {
 
   //Para cargar comentarios-------------------------------------------------------------
 
-  //Para cerrar sesion------------------------------------------------------------------
-  const onClickSingOut = ()=>{
-    localStorage.setItem('Token', null);
-    swal({
-        icon: "success",
-        title: "Todo bien",
-        text: `Haz cerrado sesión :)`,
-        timer: "5000",
-    });
-    window.location = '/login';
-  }
-  //Para cerrar sesion------------------------------------------------------------------
+  
 
   return (
     <PokemonContext.Provider
@@ -498,8 +487,7 @@ export const PokemonContextProvider = ({ children }) => {
           onclickDeleteComment,
           onclickCrearPost,
           setFieldPost,
-          setopenmodal,
-          onClickSingOut
+          setopenmodal
         },
       ]}
     >
