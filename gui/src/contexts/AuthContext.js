@@ -21,6 +21,8 @@ export const AuthContextProvider = ({ children }) => {
   const [viewpassword, setviewpassword] = useState(false)
   //UseState---------------------------------------------------------
 
+  //Firebase---------------------------------------------------------------------
+
   //useEffect---------------------------------------------------------
   useEffect(() => {
     setuser({
