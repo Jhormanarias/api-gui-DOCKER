@@ -398,8 +398,13 @@ export const PokemonContextProvider = ({ children }) => {
 
   //Para eliminar el comentario----------------------------------------------------
   const deleteComment = async (id) => {
+    let config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
     return axios
-      .delete(`${process.env.REACT_APP_HOST_LUMEN_API}/deletecomment/${id}`)
+      .delete(`${process.env.REACT_APP_HOST_LUMEN_API}/deletecomment/${id}`,config)
 
       .then(({ data }) => {
         return data;

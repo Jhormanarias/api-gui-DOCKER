@@ -18,6 +18,7 @@ export const AuthContextProvider = ({ children }) => {
   //UseState---------------------------------------------------------
   const [loginAuth, setloginAuth] = useState(false);
   const [user, setuser] = useState(initialState);
+  const [viewpassword, setviewpassword] = useState(false)
   //UseState---------------------------------------------------------
 
   //useEffect---------------------------------------------------------
@@ -28,7 +29,6 @@ export const AuthContextProvider = ({ children }) => {
       email: user.email,
       password: user.password,
     });
-    console.log(user);
   }, [user.name, user.email, user.password]);
   //useEffect---------------------------------------------------------
 
@@ -174,20 +174,34 @@ export const AuthContextProvider = ({ children }) => {
   
   //Para loguear usuario-----------------------------------------------------------------
 
-
+  //Para recibir el tipo de valor y el valor de los Input Text------------------------
   const setFieldUser = (value, field) => {
     setuser({ ...user, [field]: value });
   };
+  //Para recibir el tipo de valor y el valor de los Input Text------------------------
+
+  //boton para  ver contraseña-------------------------------------------------
+  const onClickViewPass = ()=>{
+    if(viewpassword)
+    {
+    setviewpassword(false);
+    }
+    else{
+    setviewpassword(true);
+    }
+  }
+  //boton para  ver contraseña-------------------------------------------------
 
   return (
     <AuthContext.Provider
       value={[
-        { user, loginAuth },
+        { user, loginAuth, viewpassword },
         {
           setloginAuth,
           onClickCreateUser,
           setFieldUser,
-          onClickSignIn
+          onClickSignIn,
+          onClickViewPass
         },
       ]}
     >

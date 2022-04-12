@@ -15,47 +15,21 @@ import { Login } from './components/pages/Login';
 
 function App() {
 
-  /* const [
-    { loginAuth },
-    {},
-  ] = useContext(AuthContext) */
-
-  /* let loginAuth = true; */
-  
-
-  /* const logOrApp = ()=>{
-    if (loginAuth) {
-      return(
-        <div className="App">
-          <Router>
-            <NavBar/>
-            <Switch>
-              <PokemonContextProvider>
-              <Route path='/' exact component={Inicio} />
-              <Route path='/pokemon' component={Pokemon} />
-              <Route path='/items' component={Items} />
-              </PokemonContextProvider>
-            </Switch>
-          </Router>
-        </div>
-      )
-    }
-    else{
-      return(
-        <div className="App">
-          <AuthContextProvider>
-            <Login path='/login' component={Login}/>
-          </AuthContextProvider>
-        </div>
-      )
-    }
-  };
-
-  return logOrApp(); */
+  let token = localStorage.getItem('Token');
 
   return (
     <div className="App">
-      
+      {token==='null' ? 
+      <Router>
+        <AuthContextProvider>
+          {window.location.pathname=='/login' ?
+            <Login path='/login' component={Login}/>
+          :
+            <CreateUser path='/createuser' component={CreateUser}/>
+          }
+        </AuthContextProvider>
+      </Router>
+      :
       <Router>
         <NavBar/>
         <Switch>
@@ -64,14 +38,9 @@ function App() {
           <Route path='/pokemon' component={Pokemon} />
           <Route path='/items' component={Items} />
           </PokemonContextProvider>
-        
         </Switch>
-        <AuthContextProvider>
-            <CreateUser path='/createuser' component={CreateUser}/>
-            <Login path='/login' component={Login}/>
-        </AuthContextProvider>
       </Router>
-
+      }
     </div>
   );
 

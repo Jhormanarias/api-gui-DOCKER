@@ -1,27 +1,20 @@
 import React, {useContext} from "react";
 import { AuthContext } from "../../contexts/AuthContext";
+import { InputPassword } from "./components/InputPassword";
 
 
 export const CreateUser = () => {
   const [
     { user, loginAuth},
-    { setloginAuth, onClickCreateUser, setFieldUser},
+    { onClickCreateUser, setFieldUser},
   ] = useContext(AuthContext)
 
-  const onClickButtonLog =(logOrCreate)=>{
-    setloginAuth(true)
-    if (logOrCreate==0) {
-      alert('Ingresar');
-    }
-    else{
-      alert('Crear usuario');
-
-    }
-    
+  const signIn =()=>{
+    window.location = '/login';
   }
   return (
     <div className="container-fluid col-md-6 border mt-5 mb-5">
-      <h1>Crear usuario</h1>
+      <h1>Crea tu cuenta</h1>
 
       <form>
       <div className="mb-3">
@@ -50,24 +43,14 @@ export const CreateUser = () => {
             onChange={(e)=>setFieldUser(e.target.value, "email")}
           />
         </div>
-        <div className="mb-3">
-          <label for="exampleInputPassword1" className="form-label">
-            Contraseña
-          </label>
-          <input
-            type="password"
-            className="form-control"
-            id="exampleInputPassword1"
-            value={user.password}
-            onChange={(e)=>setFieldUser(e.target.value, "password")}
-          />
-        </div>
+        <InputPassword />
         <div className="d-grid gap-2 mt-4 mb-3">
-        <button className="btn btn-primary" type="button" onClick={()=>onClickButtonLog(0)}>
-          Ingresar
-        </button>
         <button className="btn btn-primary" type="button" onClick={()=>onClickCreateUser()}>
-          Crear usuario
+          Crear cuenta
+        </button>
+        <span>O si ya tienes una cuenta...</span>
+        <button className="btn btn-secondary" type="button" onClick={()=>signIn()}>
+          Ingresa
         </button>
         {loginAuth}
       </div>
