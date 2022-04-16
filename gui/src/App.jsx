@@ -8,26 +8,56 @@ import { Items } from "./components/pages/Items";
 import { PokemonContextProvider } from "./contexts/PokemonContext";
 import { CreateUser } from "./components/pages/CreateUser";
 import { AuthContextProvider } from "./contexts/AuthContext";
-import { AuthContext } from "./contexts/AuthContext";
 import { Login } from "./components/pages/Login";
 import { Chat } from "./components/pages/Chat";
 
 //FIREBASE--------------------------------------------------------------------
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import appFirebase from "./firebase";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 //FIREBASE--------------------------------------------------------------------
 
 //appFirebase;
 const auth = getAuth(appFirebase);
+const firestore = getFirestore(appFirebase);
 
 function App() {
   let token = localStorage.getItem("Token");
 
   const [userAuth, setuserAuth] = useState(null);
 
+
+  const getName = async (uid) =>{
+    const docRef = doc(firestore, `usuarios/${uid}`);
+    const docuCifrada = await getDoc(docRef);
+    const infoFInal = docuCifrada.data().name;
+    return infoFInal;
+  }
+
+
+  const setUserWithNameFireStore = (userFirebase)=>{
+    getName(userFirebase.uid)
+      .then((name)=>{
+        const userData = {
+          uid: userFirebase.uid,
+          email: userFirebase.email,
+          name: name
+        }
+        setuserAuth(userData);
+        localStorage.setItem("UserUid", userData.uid);
+        localStorage.setItem("UserEmail", userData.email);
+        localStorage.setItem("UserName", userData.name);
+        console.log('Datos de usuario: ', userData);
+      })
+      
+  }
+
   onAuthStateChanged(auth, (userFirebase) => {
     if (userFirebase) {
-      setuserAuth(userFirebase);
+      if (!userAuth) {
+        setUserWithNameFireStore(userFirebase);
+      }
+      
     } else {
       setuserAuth(null);
     }
@@ -36,7 +66,7 @@ function App() {
 
   return (
     <div className="App">
-      {/* {token==='null' ? 
+      {token==='null' ? 
       <Router>
         <AuthContextProvider>
           {window.location.pathname=='/login' ?
@@ -58,9 +88,9 @@ function App() {
           </PokemonContextProvider>
         </Switch>
       </Router>
-      } */}
+      }
 
-      {userAuth ? 
+      {/* {userAuth ? 
       <Router>
           <NavBar />
           <Switch>
@@ -82,7 +112,7 @@ function App() {
             )}
           </AuthContextProvider>
         </Router>
-      }
+      } */}
     </div>
   );
 }

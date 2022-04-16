@@ -394,7 +394,6 @@ export const PokemonContextProvider = ({ children }) => {
         });
         e.target.value = "";
         setpost({ ...post, status: "Noloaded" });
-        console.log(comment.id);
       }
     }
   };

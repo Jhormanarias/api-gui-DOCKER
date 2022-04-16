@@ -10,6 +10,10 @@ const auth = getAuth(appFirebase);
 export const NavBar = () => {
     const onClickSingOut = ()=>{
         localStorage.setItem('Token', null);
+        localStorage.removeItem('UserName');
+        localStorage.removeItem('UserEmail');
+        localStorage.removeItem('UserUid');
+
         signOut(auth);
         swal({
             icon: "success",

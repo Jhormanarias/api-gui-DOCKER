@@ -133,14 +133,9 @@ export const AuthContextProvider = ({ children }) => {
   //para crear usuario---------------------------------------------------------
 
   //para loguear en firebase---------------------------------------------------------
-  const logFirebase = async () => {
-    const userInfoLog = await signInWithEmailAndPassword(
-      auth,
-      user.email,
-      user.password
-    ).then((userResponseLog)=>{
-      console.log(userResponseLog);
-    });
+  const logFirebase = () => {
+    console.log(user.email,' ', user.password);
+    signInWithEmailAndPassword(auth, user.email, user.password);
   };
 
   //para loguear en firebase---------------------------------------------------------
@@ -157,6 +152,7 @@ export const AuthContextProvider = ({ children }) => {
       .then(({ data }) => {
         //console.log(data.token);
         localStorage.setItem("Token", data.token);
+        logFirebase();
         return data;
       })
       .catch((e) => {
@@ -206,13 +202,15 @@ export const AuthContextProvider = ({ children }) => {
         text: `Logueado correctamente :)`,
         timer: "5000",
       });
-    logFirebase();
-      setuser({
+      /* setuser({
         ...user,
         email: "",
         password: "",
-      });
-      window.location = "/items";
+      }); */
+      const locationTimeOut = ()=>{
+        window.location = "/items";
+      }
+      setTimeout(locationTimeOut, 1500);
     }
   };
 
