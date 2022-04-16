@@ -1,5 +1,6 @@
 import React from "react";
 import { Messages } from "./components/Messages";
+import { SelectChat } from "./components/SelectChat";
 import { SendMessage } from "./components/SendMessage";
 
 export const Chat = () => {
@@ -19,6 +20,10 @@ export const Chat = () => {
               </small>
             </p>
           </figure>
+          <SelectChat nameChat={'Juanito'}/>
+          <SelectChat nameChat={'Jhorman'}/>
+          <SelectChat nameChat={'Pepito Peréz'}/>
+
         </div>
         {/* Donde aparece la información del usuario */}
 
