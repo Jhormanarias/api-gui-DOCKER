@@ -2,7 +2,7 @@ import React from "react";
 
 export const SendMessage = () => {
   return (
-    <>
+    <div className="align-items-end ">
       <form /* onSubmit={sendMessage} */>
         
         <div class="input-group mb-3 mt-4">
@@ -20,6 +20,6 @@ export const SendMessage = () => {
           </button>
         </div>
       </form>
-    </>
+    </div>
   );
 };

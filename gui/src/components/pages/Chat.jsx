@@ -22,8 +22,15 @@ export const Chat = () => {
         </div>
         {/* Donde aparece la información del usuario */}
 
-        <div className="col-md-9">
-          <Messages />
+        <div className=" col-md-9 messages">
+          Messages
+          <Messages textMessage={'Holaaa'}/>
+          <Messages textMessage={'Mensaje de prueba'}/>
+          <Messages textMessage={'Pruebas y pruebas'}/>
+          <Messages textMessage={'No sé que hacer'}/>
+          <Messages textMessage={'Por favor'}/>
+          <Messages textMessage={'Ayuda :"(('}/>
+
           <SendMessage />
         </div>
       </div>
