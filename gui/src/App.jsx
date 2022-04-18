@@ -1,5 +1,6 @@
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import React, { useState } from "react";
 import { NavBar } from "./components/navigation/NavBar";
 import { Inicio } from "./components/pages/Inicio";
@@ -21,43 +22,40 @@ import { getFirestore, doc, getDoc } from "firebase/firestore";
 const auth = getAuth(appFirebase);
 const firestore = getFirestore(appFirebase);
 
-function App() {
+const App = () => {
+  let history = useHistory();
   let token = localStorage.getItem("Token");
 
   const [userAuth, setuserAuth] = useState(null);
+  const [loginAuth, setloginAuth] = useState(false);
 
-
-  const getName = async (uid) =>{
+  const getName = async (uid) => {
     const docRef = doc(firestore, `usuarios/${uid}`);
     const docuCifrada = await getDoc(docRef);
     const infoFInal = docuCifrada.data().name;
     return infoFInal;
-  }
+  };
 
-
-  const setUserWithNameFireStore = (userFirebase)=>{
-    getName(userFirebase.uid)
-      .then((name)=>{
-        const userData = {
-          uid: userFirebase.uid,
-          email: userFirebase.email,
-          name: name
-        }
-        setuserAuth(userData);
-        localStorage.setItem("UserUid", userData.uid);
-        localStorage.setItem("UserEmail", userData.email);
-        localStorage.setItem("UserName", userData.name);
-        console.log('Datos de usuario: ', userData);
-      })
-      
-  }
+  const setUserWithNameFireStore = (userFirebase) => {
+    getName(userFirebase.uid).then((name) => {
+      const userData = {
+        uid: userFirebase.uid,
+        email: userFirebase.email,
+        name: name,
+      };
+      setuserAuth(userData);
+      localStorage.setItem("UserUid", userData.uid);
+      localStorage.setItem("UserEmail", userData.email);
+      localStorage.setItem("UserName", userData.name);
+      console.log("Datos de usuario: ", userData);
+    });
+  };
 
   onAuthStateChanged(auth, (userFirebase) => {
     if (userFirebase) {
       if (!userAuth) {
         setUserWithNameFireStore(userFirebase);
       }
-      
     } else {
       setuserAuth(null);
     }
@@ -66,43 +64,23 @@ function App() {
 
   return (
     <div className="App">
-      {token==='null' ? 
-      <Router>
+      {/* <Router>
         <AuthContextProvider>
-          {window.location.pathname=='/login' ?
-            <Login path='/login' component={Login}/>
-          :
-            <CreateUser path='/createuser' component={CreateUser}/>
-          }
-        </AuthContextProvider>
-      </Router>
-      :
-      <Router>
-        <NavBar/>
-        <Switch>
-          <PokemonContextProvider>
-          <Route path='/' exact component={Inicio} />
-          <Route path='/pokemon' component={Pokemon} />
-          <Route path='/items' component={Items} />
-          <Route path='/chat' component={Chat} />
-          </PokemonContextProvider>
-        </Switch>
-      </Router>
-      }
+          <Login path="/login" component={Login} />
 
-      {/* {userAuth ? 
-      <Router>
+          <CreateUser path="/createuser" component={CreateUser} />
+
           <NavBar />
-          <Switch>
-            <PokemonContextProvider>
-              <Route path="/" exact component={Inicio} />
-              <Route path="/pokemon" component={Pokemon} />
-              <Route path="/items" component={Items} />
-              <Route path="/chat" component={Chat} />
-            </PokemonContextProvider>
-          </Switch>
-        </Router>
-      : 
+          <PokemonContextProvider>
+            <Route path="/" exact component={Inicio} />
+            <Route path="/pokemon" component={Pokemon} />
+            <Route path="/items" component={Items} />
+            <Route path="/chat" component={Chat} />
+          </PokemonContextProvider>
+        </AuthContextProvider>
+      </Router> */}
+
+      {token === "null" ? (
         <Router>
           <AuthContextProvider>
             {window.location.pathname == "/login" ? (
@@ -112,9 +90,68 @@ function App() {
             )}
           </AuthContextProvider>
         </Router>
-      } */}
+      ) : (
+        <Router>
+          <Switch>
+            <AuthContextProvider>
+              <NavBar />
+              <PokemonContextProvider>
+                <Route path="/" exact component={Inicio} />
+                <Route path="/pokemon" component={Pokemon} />
+                <Route path="/items" component={Items} />
+                <Route path="/chat" component={Chat} />
+              </PokemonContextProvider>
+            </AuthContextProvider>
+          </Switch>
+        </Router>
+      )}
+
+      {/* {token ?? (
+        <Router>
+          <Switch>
+            <AuthContextProvider>
+            <Login path="/login" component={Login} />
+            <CreateUser path="/createuser" component={CreateUser} />
+              <NavBar />
+              <PokemonContextProvider>
+                <Route path="/" exact component={Inicio} />
+                <Route path="/pokemon" component={Pokemon} />
+                <Route path="/items" component={Items} />
+                <Route path="/chat" component={Chat} />
+              </PokemonContextProvider>
+            </AuthContextProvider>
+          </Switch>
+        </Router>
+      )} */}
+
+      {/* {userAuth ? (
+        <Router>
+          <NavBar />
+          <Switch>
+            <AuthContextProvider>
+              <NavBar />
+              <PokemonContextProvider>
+                <Route path="/" exact component={Inicio} />
+                <Route path="/pokemon" component={Pokemon} />
+                <Route path="/items" component={Items} />
+                <Route path="/chat" component={Chat} />
+              </PokemonContextProvider>
+            </AuthContextProvider>
+          </Switch>
+        </Router>
+      ) : (
+        <Router>
+          <AuthContextProvider>
+            {window.location.pathname == "/login" ? (
+              <Login path="/login" component={Login} />
+            ) : (
+              <CreateUser path="/createuser" component={CreateUser} />
+            )}
+          </AuthContextProvider>
+        </Router>
+      )} */}
     </div>
   );
-}
+};
 
 export default App;

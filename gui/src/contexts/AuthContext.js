@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert";
 import appFirebase from "../firebase";
@@ -6,6 +7,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 
@@ -17,6 +19,11 @@ const initialState = {
     email: "",
     password: "",
   },
+  token: {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+    }
+  }
 };
 
 const auth = getAuth(appFirebase);
@@ -27,10 +34,14 @@ const firestore = getFirestore(appFirebase);
 export const AuthContext = createContext([]);
 
 export const AuthContextProvider = ({ children }) => {
+  let history = useHistory();
+
   //UseState---------------------------------------------------------
   const [loginAuth, setloginAuth] = useState(false);
   const [user, setuser] = useState(initialState);
   const [viewpassword, setviewpassword] = useState(false);
+  const [localToken, setlocalToken] = useState(null);
+  const [forToken, setforToken] = useState(initialState.token)
   //UseState---------------------------------------------------------
 
   //useEffect---------------------------------------------------------
@@ -134,7 +145,7 @@ export const AuthContextProvider = ({ children }) => {
 
   //para loguear en firebase---------------------------------------------------------
   const logFirebase = () => {
-    console.log(user.email,' ', user.password);
+    console.log(user.email, " ", user.password);
     signInWithEmailAndPassword(auth, user.email, user.password);
   };
 
@@ -150,8 +161,10 @@ export const AuthContextProvider = ({ children }) => {
       })
 
       .then(({ data }) => {
-        //console.log(data.token);
         localStorage.setItem("Token", data.token);
+        let dataToken = data.token;
+        setlocalToken(dataToken);
+        console.log(dataToken);
         logFirebase();
         return data;
       })
@@ -207,12 +220,18 @@ export const AuthContextProvider = ({ children }) => {
         email: "",
         password: "",
       }); */
-      const locationTimeOut = ()=>{
-        window.location = "/items";
-      }
-      setTimeout(locationTimeOut, 1500);
+      setloginAuth(true);
+      console.log(loginAuth);
+      history.push("/items");
     }
   };
+
+  useEffect(() => {
+    console.log(localToken);
+    setforToken(localToken);
+    setloginAuth(true);
+
+  }, [localToken]);
 
   //Para loguear usuario-----------------------------------------------------------------
 
@@ -232,16 +251,37 @@ export const AuthContextProvider = ({ children }) => {
   };
   //boton para  ver contraseña-------------------------------------------------
 
+  //Para cerrar sesion-----------------------------------------------------------------
+  const onClickSingOut = () => {
+    localStorage.setItem("Token", null);
+    localStorage.removeItem("UserName");
+    localStorage.removeItem("UserEmail");
+    localStorage.removeItem("UserUid");
+
+    signOut(auth);
+    setloginAuth(false);
+    swal({
+      icon: "success",
+      title: "Todo bien",
+      text: `Haz cerrado sesión :)`,
+      timer: "5000",
+    });
+    window.location = "/login";
+  };
+  //Para cerrar sesion-----------------------------------------------------------------
+
   return (
     <AuthContext.Provider
       value={[
-        { user, loginAuth, viewpassword },
+        { user, loginAuth, viewpassword, forToken },
         {
           setloginAuth,
           onClickCreateUser,
           setFieldUser,
           onClickSignIn,
           onClickViewPass,
+          onClickSingOut,
+          history,
         },
       ]}
     >

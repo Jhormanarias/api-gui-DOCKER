@@ -1,28 +1,14 @@
-import React from 'react';
+import React ,{useContext} from 'react';
 import { Link } from 'react-router-dom';
-import swal from 'sweetalert';
 import { getAuth, signOut } from "firebase/auth";
 import appFirebase from '../../firebase';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const auth = getAuth(appFirebase);
 
 
 export const NavBar = () => {
-    const onClickSingOut = ()=>{
-        localStorage.setItem('Token', null);
-        localStorage.removeItem('UserName');
-        localStorage.removeItem('UserEmail');
-        localStorage.removeItem('UserUid');
-
-        signOut(auth);
-        swal({
-            icon: "success",
-            title: "Todo bien",
-            text: `Haz cerrado sesión :)`,
-            timer: "5000",
-        });
-        window.location = '/login';
-    }
+    const [{ loginAuth}, {onClickSingOut}] = useContext(AuthContext);
     return (
         <div>
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">

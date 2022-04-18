@@ -1,6 +1,7 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import axios from "axios";
 import swal from "sweetalert";
+import { AuthContext } from "./AuthContext";
 
 const initialState = {
   pokemon: {
@@ -24,21 +25,19 @@ const initialState = {
     createPostStatus: "",
     modalPost: "none",
   },
-  token: {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('Token')}`
-  }
-}
 };
 
 export const PokemonContext = createContext([]);
 
 export const PokemonContextProvider = ({ children }) => {
+  const [{ loginAuth, forToken }, { history, setloginAuth }] = useContext(AuthContext);
+  console.log(loginAuth);
+
   const [pokemos, setpokemos] = useState(initialState.pokemon);
   const [searchPokemon, setsearchPokemon] = useState("");
   const [post, setpost] = useState(initialState.post);
   const [openmodal, setopenmodal] = useState(false);
-  const [tokenState, settokenState] = useState(initialState.token)
+  const [tokenState, settokenState] = useState(forToken);
 
   useEffect(async () => {
     //Solo se va a ejecutar la peticion cuando el estado pokemon aún no haya cargado
@@ -184,7 +183,7 @@ export const PokemonContextProvider = ({ children }) => {
 
   //Esto es para saber si el localStorage esta disponible
 
-    /* if (typeof(Storage) !== "undefined") {
+  /* if (typeof(Storage) !== "undefined") {
       console.log('LocalStorage disponible');
       // LocalStorage disponible
   } else {
@@ -198,7 +197,8 @@ export const PokemonContextProvider = ({ children }) => {
 
   //Para obtener todos los post y comentarios-----------------------------------------
   const getPost = async () => {
-    return axios
+    if (loginAuth) {
+      return axios
       .get(`${process.env.REACT_APP_HOST_LUMEN_API}/allposts`, tokenState)
 
       .then(({ data }) => {
@@ -206,18 +206,21 @@ export const PokemonContextProvider = ({ children }) => {
       })
       .catch((e) => {
         if (e.response.status == 401) {
-          swal({title: 'Error!',
-          text: e.response.data.message,
-          icon: 'error'
+          swal({
+            title: "Error!",
+            text: e.response.data.message,
+            icon: "error",
+          });
+        } else {
+          swal({
+            title: "Error!",
+            text: "Algo salio mal en la llamada al servidor",
+            icon: "error",
           });
         }
-        else{
-        swal({title: 'Error!',
-        text: 'Algo salio mal en la llamada al servidor',
-        icon: 'error'
-        });
-        }
       });
+    }
+    
   };
   //Para obtener todos los post y comentarios-----------------------------------------
 
@@ -229,78 +232,67 @@ export const PokemonContextProvider = ({ children }) => {
 
   const postPost = async ({ title, body }) => {
     return axios
-      .post(`${process.env.REACT_APP_HOST_LUMEN_API}/createpost`, {
-        title,
-        body,
-        users_id: 1,
-      }, tokenState)
+      .post(
+        `${process.env.REACT_APP_HOST_LUMEN_API}/createpost`,
+        {
+          title,
+          body,
+          users_id: 1,
+        },
+        tokenState
+      )
 
       .then(({ data }) => {
         return data;
       })
       .catch((e) => {
         /* console.log(e.response.data); */
-        
-        if (e.response.status == 422) {
 
+        if (e.response.status == 422) {
           let dataArray = Object.keys(e.response.data);
 
-          let concatMessage = '';
+          let concatMessage = "";
 
-          const concatObjectError = ()=>{
-            dataArray.forEach(field => {
-              concatMessage = concatMessage+'\n'+e.response.data[field][0];
+          const concatObjectError = () => {
+            dataArray.forEach((field) => {
+              concatMessage = concatMessage + "\n" + e.response.data[field][0];
             });
-          }
+          };
 
-          
-          
-          concatObjectError()
+          concatObjectError();
 
           swal({
             icon: "error",
             title: "Oops...",
             /* Texto */
             text: `${concatMessage}`,
-            
+
             /* `${e.response.data.title==undefined ? ('') : e.response.data.title} 
              \n ${e.response.data.body==undefined ?('') : e.response.data.body}`, */
-             /* Texto */
+            /* Texto */
             timer: "5000",
           });
-        }
-        else if (e.response.status == 401) {
-          swal({title: 'Error!',
-          text: e.response.data.message,
-          icon: 'error'
+        } else if (e.response.status == 401) {
+          swal({
+            title: "Error!",
+            text: e.response.data.message,
+            icon: "error",
           });
-        }
-        
-        else {
-          swal({title: 'Error!',
-          text: 'Algo salio mal en la llamada al servidor',
-          icon: 'error'
+        } else {
+          swal({
+            title: "Error!",
+            text: "Algo salio mal en la llamada al servidor",
+            icon: "error",
           });
         }
       });
   };
-  
-
-
 
   const onclickCrearPost = async (e) => {
     let createPost = await postPost({
       title: post.title,
       body: post.body,
     });
-
-    /* createPost.then(value => {
-      console.log(value);
-      if (value == 422) {
-        swal('Todo Mal', 'El titulo ya se tomo o no ha llenado todos los campos');
-      }
-    }); */
-
 
     if (createPost) {
       swal({
@@ -330,48 +322,49 @@ export const PokemonContextProvider = ({ children }) => {
   //Para Mandar el comentario----------------------------------------------------
   const postComment = async ({ comment, comment_id, post_id }) => {
     return axios
-      .post(`${process.env.REACT_APP_HOST_LUMEN_API}/createcomment`, {
-        comment,
-        comment_id,
-        post_id,
-        users_id: 1,
-      }, tokenState)
+      .post(
+        `${process.env.REACT_APP_HOST_LUMEN_API}/createcomment`,
+        {
+          comment,
+          comment_id,
+          post_id,
+          users_id: 1,
+        },
+        tokenState
+      )
 
       .then(({ data }) => {
         return data;
       })
       .catch((e) => {
         if (e.response.status == 422) {
-
           let dataArray = Object.keys(e.response.data);
 
-          let concatMessage = '';
+          let concatMessage = "";
 
-          const concatObjectError = ()=>{
-            dataArray.forEach(field => {
-              concatMessage = concatMessage+'\n'+e.response.data[field][0];
+          const concatObjectError = () => {
+            dataArray.forEach((field) => {
+              concatMessage = concatMessage + "\n" + e.response.data[field][0];
             });
-          }
-          concatObjectError()
+          };
+          concatObjectError();
           swal({
             icon: "error",
             title: "Oops...",
             text: `${concatMessage}`,
             timer: "5000",
           });
-        }
-        
-        else if (e.response.status == 401) {
-          swal({title: 'Error!',
-          text: e.response.data.message,
-          icon: 'error'
+        } else if (e.response.status == 401) {
+          swal({
+            title: "Error!",
+            text: e.response.data.message,
+            icon: "error",
           });
-        }
-        
-        else {
-          swal({title: 'Error!',
-          text: 'Algo salio mal en la llamada al servidor',
-          icon: 'error'
+        } else {
+          swal({
+            title: "Error!",
+            text: "Algo salio mal en la llamada al servidor",
+            icon: "error",
           });
         }
       });
@@ -403,7 +396,10 @@ export const PokemonContextProvider = ({ children }) => {
   //Para eliminar el comentario----------------------------------------------------
   const deleteComment = async (id) => {
     return axios
-      .delete(`${process.env.REACT_APP_HOST_LUMEN_API}/deletecomment/${id}`,tokenState)
+      .delete(
+        `${process.env.REACT_APP_HOST_LUMEN_API}/deletecomment/${id}`,
+        tokenState
+      )
 
       .then(({ data }) => {
         return data;
@@ -415,15 +411,17 @@ export const PokemonContextProvider = ({ children }) => {
         if (e.response.status == 422) {
           return 422;
         } else {
-          swal({title: 'Error!',
-          text: 'Algo salio mal en la llamada al servidor',
-          icon: 'error'
+          swal({
+            title: "Error!",
+            text: "Algo salio mal en la llamada al servidor",
+            icon: "error",
           });
         }
       });
   };
 
   const onclickDeleteComment = async (id) => {
+    setloginAuth(true);
     swal({
       title: "Eliminar",
       text: "Estas seguro de eliminar?",
@@ -433,7 +431,7 @@ export const PokemonContextProvider = ({ children }) => {
       if (respuesta) {
         let onDeleteComment = await deleteComment(id);
         if (onDeleteComment) {
-          setpost({...post, status: "Noloaded" });
+          setpost({ ...post, status: "Noloaded" });
           swal({
             title: "Correcto",
             text: "Comentario Eliminado :) ",
@@ -450,22 +448,29 @@ export const PokemonContextProvider = ({ children }) => {
 
   //Para cargar post--------------------------------------------------------------------
   useEffect(async () => {
-    if (post.status == "Noloaded") {
-      async function getData() {
-        let posts = await getPost();
-
-        if (posts) {
-          setpost({ ...post, posts, status: "loaded" });
+    if (loginAuth) {
+      if (post.status == "Noloaded") {
+        async function getData() {
+          let posts = await getPost();
+  
+          if (posts) {
+            setpost({ ...post, posts, status: "loaded" });
+          }
         }
+        getData();
+        console.log(process);
       }
-      getData();
-      console.log(process);
     }
+    
   }, [post]);
 
-  //Para cargar comentarios-------------------------------------------------------------
+useEffect(() => {
+  console.log(loginAuth);
+}, [loginAuth])
 
-  
+
+
+  //Para cargar comentarios-------------------------------------------------------------
 
   return (
     <PokemonContext.Provider
@@ -486,7 +491,7 @@ export const PokemonContextProvider = ({ children }) => {
           onclickDeleteComment,
           onclickCrearPost,
           setFieldPost,
-          setopenmodal
+          setopenmodal,
         },
       ]}
     >
