@@ -47,7 +47,6 @@ const App = () => {
       localStorage.setItem("UserUid", userData.uid);
       localStorage.setItem("UserEmail", userData.email);
       localStorage.setItem("UserName", userData.name);
-      console.log("Datos de usuario: ", userData);
     });
   };
 
@@ -59,7 +58,6 @@ const App = () => {
     } else {
       setuserAuth(null);
     }
-    console.log(userFirebase);
   });
 
   return (

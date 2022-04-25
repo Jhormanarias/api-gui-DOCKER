@@ -31,4 +31,11 @@ class AuthController extends ResourceController
 
         return $this->respondWithToken($token);
     }
+
+
+    public function user(Request $request)
+    {
+        $user = $request->user();
+        return $user ?? null;
+    }
 }

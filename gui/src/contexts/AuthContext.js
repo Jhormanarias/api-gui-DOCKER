@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
+import axiosClient from "../contexts/axios/cliente";
 import swal from "sweetalert";
 import appFirebase from "../firebase";
 import {
@@ -11,19 +11,22 @@ import {
 } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 
+export const STATUS_NO_LOADED = 'Noloaded';
+
+export const STATUS_LOADING = 'loading';
+
+export const STATUS_LOGIN = 'login';
+
+
 const initialState = {
   user: {
     users: [],
-    status: "Noloaded",
+    status: STATUS_NO_LOADED,
     name: "",
     email: "",
     password: "",
+    user: {}
   },
-  token: {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
-    }
-  }
 };
 
 const auth = getAuth(appFirebase);
@@ -55,6 +58,31 @@ export const AuthContextProvider = ({ children }) => {
   }, [user.name, user.email, user.password]);
   //useEffect---------------------------------------------------------
 
+
+  useEffect(() => {
+    /* setuser({
+      ...user,
+      name: user.name,
+      email: user.email,
+      password: user.password,
+    }); */
+
+    console.log(user.user.status);
+
+      if (user.user.status===STATUS_NO_LOADED) {
+        axiosClient().get(`getUser`)
+        .then(({data})=>{
+          setuser({
+            ...user,
+            status: STATUS_LOGIN,
+            user: data
+          })
+        })
+      }
+
+  }, [user.user.status])
+  
+
   //Para crear usuario en firebase--------------------------------------------------
   const registroUserFirebase = async () => {
     const userInfo = await createUserWithEmailAndPassword(
@@ -77,8 +105,8 @@ export const AuthContextProvider = ({ children }) => {
   //para crear usuario(API POSTGRES)---------------------------------------------------------
 
   const postUser = async ({ name, email, password }) => {
-    return axios
-      .post(`${process.env.REACT_APP_HOST_LUMEN_API}/createuser`, {
+    return axiosClient
+      .post(`/createuser`, {
         name,
         email,
         password,
@@ -145,7 +173,6 @@ export const AuthContextProvider = ({ children }) => {
 
   //para loguear en firebase---------------------------------------------------------
   const logFirebase = () => {
-    console.log(user.email, " ", user.password);
     signInWithEmailAndPassword(auth, user.email, user.password);
   };
 
@@ -154,17 +181,16 @@ export const AuthContextProvider = ({ children }) => {
   //Para loguear usuario(API POSTGRES)-----------------------------------------------------------------
 
   const postLog = async ({ email, password }) => {
-    return axios
-      .post(`${process.env.REACT_APP_HOST_LUMEN_API}/login`, {
+    setuser({...{user, status: STATUS_LOADING}});
+    return axiosClient()
+      .post(`/login`, {
         email,
         password,
       })
 
       .then(({ data }) => {
         localStorage.setItem("Token", data.token);
-        let dataToken = data.token;
-        setlocalToken(dataToken);
-        console.log(dataToken);
+        setuser({...{user, status: STATUS_LOGIN}});
         logFirebase();
         return data;
       })
@@ -221,17 +247,15 @@ export const AuthContextProvider = ({ children }) => {
         password: "",
       }); */
       setloginAuth(true);
-      console.log(loginAuth);
       history.push("/items");
     }
   };
 
   useEffect(() => {
-    console.log(localToken);
     setforToken(localToken);
     setloginAuth(true);
 
-  }, [localToken]);
+  }, [forToken]);
 
   //Para loguear usuario-----------------------------------------------------------------
 
@@ -269,6 +293,8 @@ export const AuthContextProvider = ({ children }) => {
     window.location = "/login";
   };
   //Para cerrar sesion-----------------------------------------------------------------
+
+
 
   return (
     <AuthContext.Provider

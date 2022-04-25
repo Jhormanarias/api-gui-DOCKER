@@ -1,10 +1,12 @@
 import React, { useContext, useState, useEffect } from "react";
 import swal from "sweetalert";
+import { AuthContext } from "../../contexts/AuthContext";
 import { PokemonContext } from "../../contexts/PokemonContext";
 import { Comments } from "./components/Comments";
 import ModalCreatePost from "./components/ModalCreatePost";
 
 export const Items = () => {
+  const [{ user }, {  }] = useContext(AuthContext);
   const [{ post }, { enterComment }] = useContext(PokemonContext);
   const [noloaded, setnoloaded] = useState(true);
   const userName = localStorage.getItem("UserName");
@@ -26,6 +28,7 @@ export const Items = () => {
       <h1>Post</h1>
       <br />
       <br />
+      {JSON.stringify(user)}
       <ModalCreatePost />
       <br />
       <br />

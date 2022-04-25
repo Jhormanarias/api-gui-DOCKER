@@ -23,6 +23,7 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'api'], function () use ($router) {
     // Matches "/api/register
     $router->post('login', 'AuthController@login');
+    $router->get("getUser", "AuthController@user");
     $router->post("createuser", "UserController@store");
     $router->get("allposts", "PostController@index");
     $router->get("post/{id}", "PostController@show");

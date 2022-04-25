@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import axios from "axios";
+import axiosClient from "../contexts/axios/cliente";
 import swal from "sweetalert";
 import { AuthContext } from "./AuthContext";
 
@@ -30,8 +31,7 @@ const initialState = {
 export const PokemonContext = createContext([]);
 
 export const PokemonContextProvider = ({ children }) => {
-  const [{ loginAuth, forToken }, { history, setloginAuth }] = useContext(AuthContext);
-  console.log(loginAuth);
+  const [{ user, loginAuth, forToken }, { history, setloginAuth }] = useContext(AuthContext);
 
   const [pokemos, setpokemos] = useState(initialState.pokemon);
   const [searchPokemon, setsearchPokemon] = useState("");
@@ -198,10 +198,11 @@ export const PokemonContextProvider = ({ children }) => {
   //Para obtener todos los post y comentarios-----------------------------------------
   const getPost = async () => {
     if (loginAuth) {
-      return axios
-      .get(`${process.env.REACT_APP_HOST_LUMEN_API}/allposts`, tokenState)
+      return axiosClient()
+      .get(`/allposts`)
 
       .then(({ data }) => {
+        console.log(user.status);
         return data;
       })
       .catch((e) => {
@@ -231,15 +232,14 @@ export const PokemonContextProvider = ({ children }) => {
   }, [post.title, post.body]);
 
   const postPost = async ({ title, body }) => {
-    return axios
+    return axiosClient
       .post(
-        `${process.env.REACT_APP_HOST_LUMEN_API}/createpost`,
+        `/createpost`,
         {
           title,
           body,
           users_id: 1,
-        },
-        tokenState
+        }
       )
 
       .then(({ data }) => {
@@ -321,16 +321,15 @@ export const PokemonContextProvider = ({ children }) => {
 
   //Para Mandar el comentario----------------------------------------------------
   const postComment = async ({ comment, comment_id, post_id }) => {
-    return axios
+    return axiosClient
       .post(
-        `${process.env.REACT_APP_HOST_LUMEN_API}/createcomment`,
+        `/createcomment`,
         {
           comment,
           comment_id,
           post_id,
           users_id: 1,
-        },
-        tokenState
+        }
       )
 
       .then(({ data }) => {
@@ -395,10 +394,9 @@ export const PokemonContextProvider = ({ children }) => {
 
   //Para eliminar el comentario----------------------------------------------------
   const deleteComment = async (id) => {
-    return axios
+    return axiosClient
       .delete(
-        `${process.env.REACT_APP_HOST_LUMEN_API}/deletecomment/${id}`,
-        tokenState
+        `/deletecomment/${id}`
       )
 
       .then(({ data }) => {
@@ -458,14 +456,12 @@ export const PokemonContextProvider = ({ children }) => {
           }
         }
         getData();
-        console.log(process);
       }
     }
     
   }, [post]);
 
 useEffect(() => {
-  console.log(loginAuth);
 }, [loginAuth])
 
 
