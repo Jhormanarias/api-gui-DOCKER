@@ -9,16 +9,16 @@ export const Comments = ({ comments }) => {
       {comments.map((comment) => {
         return (
           <div key={comment.id}>
-            <div class="card text-white bg-secondary mb-3">
-              <div class="card-body">
-                <p class="card-text">{comment.comment}</p>
+            <div className="card text-white bg-secondary mb-3">
+              <div className="card-body">
+                <p className="card-text">{comment.comment}</p>
                 <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                  <button type="button" class="btn btn-success"><i class="fa-solid fa-pen"></i></button>  {/* editar */}
-                  <button type="button" class="btn btn-danger" onClick={()=>onclickDeleteComment(comment.id)}><i className="fa-solid fa-trash"></i></button>  {/* eliminar */}
+                  <button type="button" className="btn btn-success"><i className="fa-solid fa-pen"></i></button>  {/* editar */}
+                  <button type="button" className="btn btn-danger" onClick={()=>onclickDeleteComment(comment.id)}><i className="fa-solid fa-trash"></i></button>  {/* eliminar */}
                 </div>
               </div>
             </div>
-            <div class="input-group mb-3">
+            <div className="input-group mb-3">
               
               <input
                 type="text"

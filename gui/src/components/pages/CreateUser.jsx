@@ -18,7 +18,7 @@ export const CreateUser = () => {
 
       <form>
       <div className="mb-3">
-          <label for="exampleInputName" className="form-label">
+          <label className="form-label">
             Nombre
           </label>
           <input
@@ -31,7 +31,7 @@ export const CreateUser = () => {
           />
         </div>
         <div className="mb-3">
-          <label for="exampleInputEmail1" className="form-label">
+          <label className="form-label">
             Email
           </label>
           <input

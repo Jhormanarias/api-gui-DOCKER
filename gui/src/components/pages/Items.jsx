@@ -13,12 +13,6 @@ export const Items = () => {
 
   if (noloaded) {
     if (userName) {
-      swal({
-        icon: "success",
-        title: `Hola ${userName}`,
-        text: `Bienvenido...`,
-        timer: "6000",
-      });
       setnoloaded(false);
     }
   }
@@ -28,7 +22,7 @@ export const Items = () => {
       <h1>Post</h1>
       <br />
       <br />
-      {JSON.stringify(user)}
+      {/* {JSON.stringify(user)} */}
       <ModalCreatePost />
       <br />
       <br />
@@ -36,14 +30,14 @@ export const Items = () => {
         return (
           <div key={post.id}>
             <div className="card text-white bg-dark mb-3">
-              <div class="card-header">
+              <div className="card-header">
                 <h5 className="card-title">{post.title}</h5>
               </div>
               <div className="card-body">
                 <p className="card-text">{post.body}</p>
               </div>
             </div>
-            <div class="input-group mb-3">
+            <div className="input-group mb-3">
               <input
                 type="text"
                 className="form-control"

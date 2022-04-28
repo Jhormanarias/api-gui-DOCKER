@@ -9,7 +9,7 @@ export const Delete = ({pokemonName}) => {
     const [{pokemos},{setpokemos,functionPokemon}] = useContext(PokemonContext);
 
    return (
-    // <div class="d-grid gap-2 mt-3">
+    // <div className="d-grid gap-2 mt-3">
         <button className="btn btn-danger"
             onClick={() => functionPokemon(pokemonName)}>
             X

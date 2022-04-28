@@ -5,7 +5,7 @@ export const SendMessage = () => {
     <div className="align-items-end ">
       <form /* onSubmit={sendMessage} */>
         
-        <div class="input-group mb-3 mt-4">
+        <div className="input-group mb-3 mt-4">
           <input
             type="text"
             className="form-control"
@@ -16,7 +16,7 @@ export const SendMessage = () => {
             type="button"
             id="button-addon2"
           >
-            Enviar <i class="fa-solid fa-paper-plane"></i>
+            Enviar <i className="fa-solid fa-paper-plane"></i>
           </button>
         </div>
       </form>

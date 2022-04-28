@@ -163,7 +163,7 @@ const BtnRegresar = () => {
       <div className="col-md-5">
         <button 
         type="button" 
-        class="btn btn-dark"
+        className="btn btn-dark"
         onClick={()=>onClickRegresar()}
         >⬅️</button>
       </div>
@@ -256,7 +256,7 @@ const BtnAvanzar = () => {
       <div className="col-md-5">
         <button 
         type="button" 
-        class="btn btn-dark"
+        className="btn btn-dark"
         onClick={()=>onClickAvanzar()}
         >➡️</button>
       </div>

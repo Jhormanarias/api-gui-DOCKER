@@ -9,7 +9,7 @@ export const InputPassword = () => {
   return (
     <>
         <div className="mb-3">
-          <label for="exampleInputPassword1" className="form-label">
+          <label className="form-label">
             Contraseña
           </label>
         </div>

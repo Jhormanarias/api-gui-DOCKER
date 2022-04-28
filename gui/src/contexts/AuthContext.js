@@ -72,6 +72,7 @@ export const AuthContextProvider = ({ children }) => {
       if (user.user.status===STATUS_NO_LOADED) {
         axiosClient().get(`getUser`)
         .then(({data})=>{
+          //seteador de estado de campos del login
           setuser({
             ...user,
             status: STATUS_LOGIN,
@@ -192,6 +193,7 @@ export const AuthContextProvider = ({ children }) => {
         localStorage.setItem("Token", data.token);
         setuser({...{user, status: STATUS_LOGIN}});
         logFirebase();
+        console.log(logFirebase());
         return data;
       })
       .catch((e) => {
@@ -237,15 +239,9 @@ export const AuthContextProvider = ({ children }) => {
     if (logUser) {
       swal({
         icon: "success",
-        title: "Todo bien",
-        text: `Logueado correctamente :)`,
+        title: "Cargando...",
         timer: "5000",
       });
-      /* setuser({
-        ...user,
-        email: "",
-        password: "",
-      }); */
       setloginAuth(true);
       history.push("/items");
     }
@@ -284,12 +280,6 @@ export const AuthContextProvider = ({ children }) => {
 
     signOut(auth);
     setloginAuth(false);
-    swal({
-      icon: "success",
-      title: "Todo bien",
-      text: `Haz cerrado sesión :)`,
-      timer: "5000",
-    });
     window.location = "/login";
   };
   //Para cerrar sesion-----------------------------------------------------------------

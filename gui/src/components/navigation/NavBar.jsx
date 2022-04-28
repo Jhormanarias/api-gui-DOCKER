@@ -25,7 +25,7 @@ export const NavBar = () => {
                             <Link className="nav-link" to="/pokemon">Pokemon</Link>
                             <Link className="nav-link" to="/items">Items</Link>
                             <Link className="nav-link" to="/chat">Chat</Link>
-                            <button type="button" class="btn btn-dark nav-link" onClick={()=>{onClickSingOut()}}>Cerrar sesión</button>
+                            <button type="button" className="btn btn-dark nav-link" onClick={()=>{onClickSingOut()}}>Cerrar sesión</button>
                         </div>
                     </div>
                 </div>

@@ -21,7 +21,7 @@ export const Pagination = () => {
                 <div className="col-md-5">
                     {pokemos.offsett > 0 && (<button
                         type="button"
-                        class="btn btn-dark"
+                        className="btn btn-dark"
                         onClick={() => onClickRegresar()}
                     >⬅️</button>)}
                     
@@ -67,7 +67,7 @@ export const Pagination = () => {
                 <div className="col-md-5">
                     <button
                         type="button"
-                        class="btn btn-dark"
+                        className="btn btn-dark"
                         onClick={() => onClickAvanzar()}
                     >➡️</button>
                 </div>
