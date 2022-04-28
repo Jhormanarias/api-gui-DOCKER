@@ -30,7 +30,19 @@
   min-height: 100%;
 }
 
-.messages{
+.selectChat:hover{
+  background-color: #1b1d20;
+  color: #fff;
+  cursor: pointer;
+}
+
+.encabezadoChat{
+  background-color: #1b1d20;
+  color: #fff;
+}
+
+
+.chatScreen{
   background-color: #282c34;
   color: #fff;
   min-height: 88vh;

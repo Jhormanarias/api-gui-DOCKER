@@ -1,8 +1,15 @@
 import React from "react";
 
-export const SelectChat = ({nameChat}) => {
+export const SelectChat = ({nameChat, setchatActivo}) => {
+
+  const handleSelectChat = ()=>{
+    setchatActivo(nameChat)
+  }
+
   return (
-    <div className="input-group mb-3 input-group-sm mb-3 border-bottom pt-4 pb-4">
+    <div 
+    onClick={()=>{handleSelectChat()}}
+    className="input-group mb-3 input-group-sm mb-3 border-bottom pt-4 pb-4 selectChat">
         <img
           className="me-2"
           src="./user.png"

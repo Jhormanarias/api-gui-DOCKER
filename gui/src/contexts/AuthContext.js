@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import axiosClient from "../contexts/axios/cliente";
 import swal from "sweetalert";
 import appFirebase from "../firebase";
@@ -38,6 +38,7 @@ export const AuthContext = createContext([]);
 
 export const AuthContextProvider = ({ children }) => {
   let history = useHistory();
+  let location = useLocation();
 
   //UseState---------------------------------------------------------
   const [loginAuth, setloginAuth] = useState(false);
@@ -67,7 +68,7 @@ export const AuthContextProvider = ({ children }) => {
       password: user.password,
     }); */
 
-    console.log(user.user.status);
+    //console.log(user.user.status);
 
       if (user.user.status===STATUS_NO_LOADED) {
         axiosClient().get(`getUser`)
@@ -193,7 +194,6 @@ export const AuthContextProvider = ({ children }) => {
         localStorage.setItem("Token", data.token);
         setuser({...{user, status: STATUS_LOGIN}});
         logFirebase();
-        console.log(logFirebase());
         return data;
       })
       .catch((e) => {
@@ -236,12 +236,14 @@ export const AuthContextProvider = ({ children }) => {
       email: user.email,
       password: user.password,
     });
+    //console.log(location.pathname);
     if (logUser) {
       swal({
         icon: "success",
         title: "Cargando...",
-        timer: "5000",
+        timer: "4000",
       });
+      
       setloginAuth(true);
       history.push("/items");
     }

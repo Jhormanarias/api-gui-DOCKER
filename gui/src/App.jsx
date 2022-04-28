@@ -28,7 +28,6 @@ const App = () => {
 
   const [userAuth, setuserAuth] = useState(null);
   const [loginAuth, setloginAuth] = useState(false);
-
   const getName = async (uid) => {
     const docRef = doc(firestore, `usuarios/${uid}`);
     const docuCifrada = await getDoc(docRef);
@@ -45,8 +44,6 @@ const App = () => {
       };
       setuserAuth(userData);
       localStorage.setItem("UserUid", userData.uid);
-      localStorage.setItem("UserEmail", userData.email);
-      localStorage.setItem("UserName", userData.name);
     });
   };
 

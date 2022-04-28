@@ -24,8 +24,7 @@ export const Login = () => {
           <input
             type="email"
             className="form-control"
-            id="exampleInputEmail1"
-            aria-describedby="emailHelp"
+            placeholder="Email"
             value={user.email}
             onChange={(e) => setFieldUser(e.target.value, "email")}
           />

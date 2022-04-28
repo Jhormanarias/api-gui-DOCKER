@@ -202,7 +202,6 @@ export const PokemonContextProvider = ({ children }) => {
       .get(`/allposts`)
 
       .then(({ data }) => {
-        console.log(user.status);
         return data;
       })
       .catch((e) => {
