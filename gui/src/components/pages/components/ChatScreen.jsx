@@ -1,18 +1,22 @@
-import React from "react";
+import React , { useContext } from "react";
+import { PokemonContext } from "../../../contexts/PokemonContext";
 import { EncabezadoChat } from "./EncabezadoChat";
 import { Messages } from "./Messages";
 import { SendMessage } from "./SendMessage";
 
+
 export const ChatScreen = ({chatActivo}) => {
+
+  const [{messagesState},{}] = useContext(PokemonContext)
+
   return (
     <div className=" col-md-9 chatScreen">
       <EncabezadoChat chatActivo={chatActivo} />
-      <Messages textMessage={"Holaaa"} />
-      <Messages textMessage={"Mensaje de prueba"} />
-      <Messages textMessage={"Pruebas y pruebas"} />
-      <Messages textMessage={"No sé que hacer"} />
-      <Messages textMessage={"Por favor"} />
-      <Messages textMessage={'Ayuda :"(('} />
+
+      {messagesState.messages.map(message => (
+        <Messages key={message.id} textMessage={message} />
+      ))}
+
       
       <SendMessage />
     </div>

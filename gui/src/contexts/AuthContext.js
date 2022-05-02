@@ -107,7 +107,7 @@ export const AuthContextProvider = ({ children }) => {
   //para crear usuario(API POSTGRES)---------------------------------------------------------
 
   const postUser = async ({ name, email, password }) => {
-    return axiosClient
+    return axiosClient()
       .post(`/createuser`, {
         name,
         email,

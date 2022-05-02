@@ -3,6 +3,9 @@ import axios from "axios";
 import axiosClient from "../contexts/axios/cliente";
 import swal from "sweetalert";
 import { AuthContext } from "./AuthContext";
+import appFirebase from "../firebase";
+import { getFirestore, doc, getDoc, onSnapshot, collection, query, where, orderBy, limitToLast } from "firebase/firestore";
+import {useCollectionData} from 'react-firebase-hooks/firestore';
 
 const initialState = {
   pokemon: {
@@ -26,18 +29,39 @@ const initialState = {
     createPostStatus: "",
     modalPost: "none",
   },
+  chat: {
+    messages: [],
+    sendMessage: "",
+    status: "noLoading",
+  },
+  messages: {},
+  users: {
+    users: [],
+    status: 'noLoading'
+  }
 };
+
+//FireStore---------------------------------------------------------------------
+const firestore = getFirestore(appFirebase);
+//FireStore---------------------------------------------------------------------
 
 export const PokemonContext = createContext([]);
 
 export const PokemonContextProvider = ({ children }) => {
-  const [{ user, loginAuth, forToken }, { history, setloginAuth }] = useContext(AuthContext);
+  const [{ user, loginAuth, forToken }, { history, setloginAuth }] =
+    useContext(AuthContext);
 
   const [pokemos, setpokemos] = useState(initialState.pokemon);
   const [searchPokemon, setsearchPokemon] = useState("");
   const [post, setpost] = useState(initialState.post);
   const [openmodal, setopenmodal] = useState(false);
   const [tokenState, settokenState] = useState(forToken);
+  const [sendMessageState, setsendMessageState] = useState(initialState.chat);
+  const [messagesState, setmessagesState] = useState(initialState.chat);
+  const [messages, setmessages] = useState(initialState.messages);
+  const [users, setusers] = useState(initialState.users);
+  const [chatActivo, setchatActivo] = useState(null);
+
 
   useEffect(async () => {
     //Solo se va a ejecutar la peticion cuando el estado pokemon aún no haya cargado
@@ -199,28 +223,27 @@ export const PokemonContextProvider = ({ children }) => {
   const getPost = async () => {
     if (loginAuth) {
       return axiosClient()
-      .get(`/allposts`)
+        .get(`/allposts`)
 
-      .then(({ data }) => {
-        return data;
-      })
-      .catch((e) => {
-        if (e.response.status == 401) {
-          swal({
-            title: "Error!",
-            text: e.response.data.message,
-            icon: "error",
-          });
-        } else {
-          swal({
-            title: "Error!",
-            text: "Algo salio mal en la llamada al servidor",
-            icon: "error",
-          });
-        }
-      });
+        .then(({ data }) => {
+          return data;
+        })
+        .catch((e) => {
+          if (e.response.status == 401) {
+            swal({
+              title: "Error!",
+              text: e.response.data.message,
+              icon: "error",
+            });
+          } else {
+            swal({
+              title: "Error!",
+              text: "Algo salio mal en la llamada al servidor",
+              icon: "error",
+            });
+          }
+        });
     }
-    
   };
   //Para obtener todos los post y comentarios-----------------------------------------
 
@@ -232,14 +255,11 @@ export const PokemonContextProvider = ({ children }) => {
 
   const postPost = async ({ title, body }) => {
     return axiosClient
-      .post(
-        `/createpost`,
-        {
-          title,
-          body,
-          users_id: 1,
-        }
-      )
+      .post(`/createpost`, {
+        title,
+        body,
+        users_id: 1,
+      })
 
       .then(({ data }) => {
         return data;
@@ -321,15 +341,12 @@ export const PokemonContextProvider = ({ children }) => {
   //Para Mandar el comentario----------------------------------------------------
   const postComment = async ({ comment, comment_id, post_id }) => {
     return axiosClient
-      .post(
-        `/createcomment`,
-        {
-          comment,
-          comment_id,
-          post_id,
-          users_id: 1,
-        }
-      )
+      .post(`/createcomment`, {
+        comment,
+        comment_id,
+        post_id,
+        users_id: 1,
+      })
 
       .then(({ data }) => {
         return data;
@@ -394,9 +411,7 @@ export const PokemonContextProvider = ({ children }) => {
   //Para eliminar el comentario----------------------------------------------------
   const deleteComment = async (id) => {
     return axiosClient
-      .delete(
-        `/deletecomment/${id}`
-      )
+      .delete(`/deletecomment/${id}`)
 
       .then(({ data }) => {
         return data;
@@ -449,7 +464,7 @@ export const PokemonContextProvider = ({ children }) => {
       if (post.status == "Noloaded") {
         async function getData() {
           let posts = await getPost();
-  
+
           if (posts) {
             setpost({ ...post, posts, status: "loaded" });
           }
@@ -457,20 +472,151 @@ export const PokemonContextProvider = ({ children }) => {
         getData();
       }
     }
-    
   }, [post]);
 
-useEffect(() => {
-}, [loginAuth])
-
-
+  useEffect(() => {}, [loginAuth]);
 
   //Para cargar comentarios-------------------------------------------------------------
+
+  //Para mandar mensaje en chat--------------------------------------------------------
+
+  //Input Message---------------------
+  const onChangeSendMessage = (e) => {
+    setsendMessageState({ ...sendMessageState, sendMessage: e.target.value });
+    console.log(sendMessageState);
+  };
+  //Input Message---------------------
+
+  //Prueba---------------------------
+  const onCLickSendMessage = () => {
+    const newMessage = {
+      id: sendMessageState.sendMessage.length,
+      text: sendMessageState.sendMessage
+    }
+
+    /* messagesRef.add({
+      message: trimmedMessage,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      uid,
+    }); */
+
+
+
+    swal("Message: " + sendMessageState.sendMessage);
+  };
+  //Prueba---------------------------
+
+  //Para mandar mensaje en chat--------------------------------------------------------
+
+  //Para ver mensaje en chat--------------------------------------------------------
+
+
+  /* const getMessage = async () => {
+    const docRef = doc(firestore, `messages/O2Essqk31DqgzWCwIhTe`);
+    const docuCifrada = await getDoc(docRef);
+    const infoFInal = docuCifrada.data().message;
+    return infoFInal;
+  }; */
+
+  useEffect(async () => {
+    if (messagesState.status == "noLoading") {
+      if (messagesState.messages) {
+        setmessagesState({
+          ...messagesState,
+          status: "loading",
+        });
+        console.log(messagesState);
+      }
+    }
+  }, [messagesState.messages]);
+
+  //Consulta que me trae toda la coleccion de mensajes-----------------------------------
+
+  useEffect(() => {
+    const q = query(collection(firestore, "chats/frailejon-juanito/mensajes"), orderBy('createdAt'), limitToLast(25));
+    let messages = []
+    const unsub = onSnapshot(q, (querySnapshot) => {
+      querySnapshot.docs.map(d => {
+        let message = d.data().message;
+        messages.push(message)
+        setmessages(d.data())
+        setmessagesState({...messagesState,
+        messages,
+        })
+      })
+    });
+  }, [])
+  
+  //Consulta que me trae toda la coleccion de mensajes-----------------------------------
+
+  //Consulta que me trae toda la coleccion de usuarios-----------------------------------
+  useEffect(() => {
+    const q = query(collection(firestore, "usuarios"));
+    const usersArr = []
+    const unsub = onSnapshot(q, (querySnapshot) => {
+      querySnapshot.docs.map(d => {
+        let user = d.data().name;
+        usersArr.push(user)
+        setmessages(d.data())
+        setusers({...users,
+        users: usersArr,
+        })
+      })
+    });
+  }, [])
+
+
+  useEffect(() => {
+    if (users.status == "noLoading") {
+      if (users.users) {
+        setusers({
+          ...users,
+          status: "loading",
+        });
+        console.log(users);
+      }
+    }
+  }, [users])
+  
+
+
+  //Consulta que me trae toda la coleccion de usuarios-----------------------------------
+
+
+
+  /* useEffect(() => {
+    // Subscribe to query with onSnapshot
+    const unsubscribe = query.onSnapshot((querySnapshot) => {
+      // Get all documents from collection - with IDs
+      const data = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      // Update state
+    setsendMessageState(data);
+    console.log(sendMessageState);
+    });
+
+    // Detach listener
+    return unsubscribe;
+  }, []); */
+
+  //Para ver mensaje en chat--------------------------------------------------------
 
   return (
     <PokemonContext.Provider
       value={[
-        { pokemos, searchPokemon, post, openmodal },
+        {
+          pokemos,
+          searchPokemon,
+          post,
+          openmodal,
+          sendMessageState,
+          messagesState,
+          messages,
+          users,
+          chatActivo,
+        },
         {
           setpokemos,
           setsearchPokemon,
@@ -487,6 +633,9 @@ useEffect(() => {
           onclickCrearPost,
           setFieldPost,
           setopenmodal,
+          onChangeSendMessage,
+          onCLickSendMessage,
+          setchatActivo,
         },
       ]}
     >
