@@ -25,7 +25,7 @@ export const ChatScreen = ({chatActivo}) => {
       <EncabezadoChat chatActivo={chatActivo} />
 
       {messagesState.messages.map(message => (
-        <Messages  textMessage={message.message} emisorMessage={message.emisor} messageTime={message.createdAt} />
+        <Messages  textMessage={message.message} emisorMessage={message.emisor} /* messageTime={message.createdAt} */ />
       ))}
 
       

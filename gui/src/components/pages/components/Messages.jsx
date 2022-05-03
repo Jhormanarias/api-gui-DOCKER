@@ -2,13 +2,13 @@ import React, { useContext } from "react";
 import { PokemonContext } from "../../../contexts/PokemonContext";
 
 
-export const Messages = ({textMessage, emisorMessage, messageTime}) => {
+export const Messages = ({textMessage, emisorMessage, /* messageTime */}) => {
   
   const [{messagesState, uid},{}] = useContext(PokemonContext)
 
-  let date = new Date(messageTime.seconds * 1000 + messageTime.nanoseconds/1000000);
+  /* let date = new Date(messageTime.seconds * 1000 + messageTime.nanoseconds/1000000);
   var timenow = [date.getHours(),date.getMinutes()].join(':');
-  let dateString = date.toDateString();
+  let dateString = date.toDateString(); */
 
   return (
     <div className="col-md-12">
@@ -24,7 +24,7 @@ export const Messages = ({textMessage, emisorMessage, messageTime}) => {
         <div className="squareMessage">
           {/* <h6 className="d-md-block">{emisorMessage}</h6 > */}
           <p>{textMessage}</p>
-          <p className="fechaSquareMessage justify-content-sm-end"><small>{dateString} {timenow}</small></p>
+          {/* <p className="fechaSquareMessage justify-content-sm-end"><small>{dateString} {timenow}</small></p> */}
         </div>
       </div>
     </div>
