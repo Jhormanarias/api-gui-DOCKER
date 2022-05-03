@@ -14,6 +14,7 @@ export const SendMessage = () => {
             type="text"
             className="form-control"
             placeholder="Mensaje..."
+            value={sendMessageState.sendMessage}
             onChange={(e)=>{onChangeSendMessage(e)}}
           />
           <button

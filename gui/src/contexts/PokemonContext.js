@@ -42,15 +42,11 @@ const initialState = {
     modalPost: "none",
   },
   chat: {
-    messages: [{
-      emisor: '',
-      receptor: '',
-      status: 'noLoading'
-    }],
+    messages: [],
     sendMessage: "",
     status: "noLoading",
   },
-  messages: {},
+  messages: [],
   users: {
     users: [],
     status: "noLoading",
@@ -78,8 +74,7 @@ export const PokemonContextProvider = ({ children }) => {
   const [messages, setmessages] = useState(initialState.messages);
   const [users, setusers] = useState(initialState.users);
   const [chatActivo, setchatActivo] = useState(null);
-  const [usersFirebase, setusersFirebase] = useState(initialState.usersFirebase);
-  const [receptor, setreceptor] = useState(null)
+  const [receptor, setreceptor] = useState(null);
 
   useEffect(async () => {
     //Solo se va a ejecutar la peticion cuando el estado pokemon aún no haya cargado
@@ -498,7 +493,9 @@ export const PokemonContextProvider = ({ children }) => {
 
   //Datos usuraio autenticado------------------------------------------------------------
 
-  const uid = localStorage.getItem('UserUid');
+  const [uid, setuid] = useState(localStorage.getItem("UserUid"));
+
+  //const uid = localStorage.getItem("UserUid");
 
   //Datos usuraio autenticado------------------------------------------------------------
 
@@ -518,13 +515,30 @@ export const PokemonContextProvider = ({ children }) => {
       text: sendMessageState.sendMessage,
     };
 
-    const ChatCollection = collection(firestore, 'chats/frailejon-juanito/mensajes');
-    addDoc(ChatCollection, {
-      emisor: uid,
-      message: newMessage.text,
-      receptor,
-      createdAt: serverTimestamp(),
-    });
+    
+      const ChatCollection = collection(
+        firestore,
+        `chats/${uid}-${receptor}/mensajes`
+      );
+      addDoc(ChatCollection, {
+        emisor: uid,
+        message: newMessage.text,
+        receptor,
+        createdAt: serverTimestamp(),
+      });
+    
+      const ChatCollection2 = collection(
+        firestore,
+        `chats/${receptor}-${uid}/mensajes`
+      );
+      addDoc(ChatCollection2, {
+        emisor: uid,
+        message: newMessage.text,
+        receptor,
+        createdAt: serverTimestamp(),
+      });
+      setsendMessageState({...sendMessageState, sendMessage: ''})
+    
   };
   //Prueba---------------------------
 
@@ -533,71 +547,95 @@ export const PokemonContextProvider = ({ children }) => {
   //Para ver mensaje en chat--------------------------------------------------------
 
   useEffect(async () => {
+    //console.log(chatActivo);
+    //console.log(receptor);
     if (messagesState.status == "noLoading") {
-      if (messagesState.messages) {
+      /* if (messagesState.messages) {
         setmessagesState({
           ...messagesState,
           status: "loading",
         });
-        console.log(messagesState);
-      }
+      } */
+      console.log(messagesState);
     }
   }, [messagesState.messages]);
 
   //Consulta que me trae toda la coleccion de mensajes-----------------------------------
 
   useEffect(() => {
-    if (chatActivo === "Juanito") {
-
+    if (chatActivo!=uid) {
       const q = query(
-        collection(firestore, "chats/frailejon-juanito/mensajes"),
+        collection(firestore, `chats/${uid}-${receptor}/mensajes`),
         orderBy("createdAt"),
         limitToLast(25)
       );
-      let messages = [];
+      //let messages = [];
       let dataMessage = [];
       const unsub = onSnapshot(q, (querySnapshot) => {
         querySnapshot.docs.map((d) => {
-          console.log(d);
-          let message = d.data().message;
-          messages.push(message);
-          dataMessage.push(
+          /* console.log(d.data());
+          console.log(d.id);*/
+          /* let docs = d.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+          })); */
+
+          //dataMessage = d.data();
+          /* dataMessage =
             {
               emisor: d.data().emisor,
               message: d.data().message,
               receptor: d.data().receptor,
               createdAt: d.data().createdAt,
               status: 'loading'
-            }
-          ) 
-          console.log(dataMessage);
-          setmessages(d.data());
-          setmessagesState({ ...messagesState, messages: dataMessage });
+            }; */
+          /*  const data = d.docs.map(doc => ({
+            ...doc.data(),
+            id: doc.id,
+          })); */
+
+          dataMessage.push(d.data());
+
+          //console.log(d);
+          //console.log(d.data());
+          //console.log(dataMessage);
+          //setmessages({...messages, dataMessage});
+          //setmessages(prevState => (prevState, dataMessage));
+          //messagesState
+          setmessagesState(prevState =>({...prevState, messages: dataMessage}));
         });
       });
-      
+
+      console.log(messagesState);
+      //console.log(messages);
     }
-    else{
+
+
+
+     else {
       //setmessagesState({ ...messagesState.messages, status: 'noLoading'});
-      const q = query(collection(firestore, "messages"), orderBy('createdAt'), limitToLast(10));
-    let messages = []
-    const unsub = onSnapshot(q, (querySnapshot) => {
-      querySnapshot.docs.map(d => {
-        let message = d.data().message;
-        messages.push(message)
-        setmessages(d.data())
-        setmessagesState({...messagesState,
-        messages,
-        })
-      })
-    });
+      const q = query(
+        collection(firestore, "messages"),
+        orderBy("createdAt"),
+        limitToLast(10)
+      );
+      let messages = [];
+      const unsub = onSnapshot(q, (querySnapshot) => {
+        querySnapshot.docs.map((d) => {
+          let message = d.data();
+          console.log(d.data());
+          messages.push(message);
+          //setmessages(d.data());
+          setmessagesState(prevState =>({...prevState, messages}));
+        });
+      });
     }
   }, [chatActivo]);
 
   //Consulta que me trae toda la coleccion de mensajes-----------------------------------
 
   //Consulta que me trae toda la coleccion de usuarios-----------------------------------
-  
+
   useEffect(async () => {
     if (messagesState.status == "noLoading") {
       if (users.users) {
@@ -609,28 +647,25 @@ export const PokemonContextProvider = ({ children }) => {
       }
     }
   }, [users.users]);
-  
+
   useEffect(() => {
     const q = query(collection(firestore, "usuarios"));
     let usersArr = [];
     const unsub = onSnapshot(q, (querySnapshot) => {
       querySnapshot.docs.map((d) => {
-        //let user = d.data().name; 
+        //let user = d.data().name;
         //usersArr.push(user);
         usersArr.push({
           id: d.id,
           name: d.data().name,
         });
         //console.log(usersArr);
-        setusers({...users,
-          users: usersArr,
-          })
+        setusers({ ...users, users: usersArr });
       });
     });
 
     console.log(users);
   }, []);
-
 
   useEffect(() => {
     if (users.status === "noLoading") {
@@ -679,6 +714,7 @@ export const PokemonContextProvider = ({ children }) => {
           users,
           chatActivo,
           receptor,
+          uid,
         },
         {
           setpokemos,

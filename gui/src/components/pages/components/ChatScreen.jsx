@@ -7,14 +7,25 @@ import { SendMessage } from "./SendMessage";
 
 export const ChatScreen = ({chatActivo}) => {
 
-  const [{messagesState},{}] = useContext(PokemonContext)
+  const [{messagesState, messages},{}] = useContext(PokemonContext)
+
+
+  /* messages.map(message => {
+    console.log(message);
+  }) */
+
+  /* messagesState.messages.map(message => {
+    console.log(message.message);
+  }) */
+
+  //console.log(messages);
 
   return (
     <div className=" col-md-9 chatScreen">
       <EncabezadoChat chatActivo={chatActivo} />
 
       {messagesState.messages.map(message => (
-        <Messages key={message.id} textMessage={message.message} emisorMessage={message.emisor} />
+        <Messages  textMessage={message.message} emisorMessage={message.emisor} messageTime={message.createdAt} />
       ))}
 
       
