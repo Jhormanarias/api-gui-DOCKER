@@ -39,31 +39,4 @@ class CommentController extends ResourceController
     }
     
     
-    /* public function store(Request $request)
-    {
-
-        $comentario = new Comment;
-
-        $comentario->id=$request->id;
-        $comentario->comment=$request->comment;
-        $comentario->comment_id=$request->comment_id;
-        $comentario->post_id=$request->post_id;
-        $comentario->user_id=$request->user_id;
-
-        $comentario->save();
-
-
-        return response()->json($request);
-    } */
-
-    /* public function show($id)
-    {
-
-        $comentario = Comment::find($id);
-
-        return response()->json($comentario);
-    } */
-
-
-    //
 }

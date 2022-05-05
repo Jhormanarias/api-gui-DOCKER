@@ -19,9 +19,7 @@ abstract class ResourceController extends Controller
      */
     public function index()
     {
-        /* $datos = $this->model::all()->whereNull('comment_id');
-
-        return response()->json($datos); */
+        //
     }
 
 
@@ -110,27 +108,4 @@ abstract class ResourceController extends Controller
         
     }
 
-
-    /* return response()->json(
-        [
-            'message' => $e,
-        ],
-        409
-    );
- */
-
-
-    /* public function softDelete($id)
-    {
-
-        $data = $this->model::destroy($id);
-        if ($data) {
-            $response = 'Successfully deleted';
-        } else {
-
-            $response = 'Error deleted';
-
-        }
-        return response($response);
-    } */
 }

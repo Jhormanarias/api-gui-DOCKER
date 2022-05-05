@@ -20,24 +20,4 @@ trait PostObserver
       });
    }
 
-
-
-
-
-
-
-
-
-
-    /**
-     * Handle the Post "store" event.
-     *
-     * @param  \App\Post  $user
-     * @return void
-     */
-    /* public function created(Post $post)
-    {
-       Log::info('Algo se subió en el modelo: ', [$post]);
-    } */
-
 }

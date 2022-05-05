@@ -32,12 +32,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get("allcomments", "CommentController@index");
     $router->post("createcomment", "CommentController@store");
     $router->delete("deletecomment/{id}", "CommentController@delete");
- });
+});
 
 
 
 
-
+//Grupo de rutas con variable $controller para no escribor el controlador manualmente
 /* function resource($prefix, $controller, $router)
 {
     $router->group(["prefix" => $prefix], function ($router) use ($controller) {
@@ -52,4 +52,3 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 }
 
 resource("post", "Post", $router); */
-
