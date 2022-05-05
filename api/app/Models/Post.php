@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Observers\PostObserver;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
+
+    use PostObserver;
+
     protected $table = 'post';
 
     protected $fillable = ['users_id','title','body'];

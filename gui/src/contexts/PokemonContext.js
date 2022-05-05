@@ -271,7 +271,7 @@ export const PokemonContextProvider = ({ children }) => {
       .post(`/createpost`, {
         title,
         body,
-        users_id: 1,
+        users_id: user.user.id,
       })
 
       .then(({ data }) => {
@@ -678,6 +678,8 @@ export const PokemonContextProvider = ({ children }) => {
       }
     }
   }, [users]);
+
+  //console.log(user.user.id);
 
   //Consulta que me trae toda la coleccion de usuarios-----------------------------------
 
