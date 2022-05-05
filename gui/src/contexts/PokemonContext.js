@@ -267,7 +267,7 @@ export const PokemonContextProvider = ({ children }) => {
   }, [post.title, post.body]);
 
   const postPost = async ({ title, body }) => {
-    return axiosClient
+    return axiosClient()
       .post(`/createpost`, {
         title,
         body,
@@ -353,7 +353,7 @@ export const PokemonContextProvider = ({ children }) => {
 
   //Para Mandar el comentario----------------------------------------------------
   const postComment = async ({ comment, comment_id, post_id }) => {
-    return axiosClient
+    return axiosClient()
       .post(`/createcomment`, {
         comment,
         comment_id,
@@ -423,7 +423,7 @@ export const PokemonContextProvider = ({ children }) => {
 
   //Para eliminar el comentario----------------------------------------------------
   const deleteComment = async (id) => {
-    return axiosClient
+    return axiosClient()
       .delete(`/deletecomment/${id}`)
 
       .then(({ data }) => {
