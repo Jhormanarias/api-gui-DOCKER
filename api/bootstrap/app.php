@@ -103,6 +103,8 @@ $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 
+//Escencial para usar Firebase
+$app->register(Kreait\Laravel\Firebase\ServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

@@ -23,7 +23,7 @@ export const NavBar = () => {
                         <div className="navbar-nav mx-auto">
                             <Link className="nav-link" to="/">Inicio</Link>
                             <Link className="nav-link" to="/pokemon">Pokemon</Link>
-                            <Link className="nav-link" to="/items">Items</Link>
+                            <Link className="nav-link" to="/items">Blog</Link>
                             <Link className="nav-link" to="/chat">Chat</Link>
                             <button type="button" className="btn btn-dark nav-link" onClick={()=>{onClickSingOut()}}>Cerrar sesión</button>
                         </div>

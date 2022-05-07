@@ -358,7 +358,7 @@ export const PokemonContextProvider = ({ children }) => {
         comment,
         comment_id,
         post_id,
-        users_id: 1,
+        users_id: user.user.id,
       })
 
       .then(({ data }) => {
