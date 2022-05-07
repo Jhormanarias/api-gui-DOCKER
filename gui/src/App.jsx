@@ -59,23 +59,8 @@ const App = () => {
 
   return (
     <div className="App">
-      {/* <Router>
-        <AuthContextProvider>
-          <Login path="/login" component={Login} />
-
-          <CreateUser path="/createuser" component={CreateUser} />
-
-          <NavBar />
-          <PokemonContextProvider>
-            <Route path="/" exact component={Inicio} />
-            <Route path="/pokemon" component={Pokemon} />
-            <Route path="/items" component={Items} />
-            <Route path="/chat" component={Chat} />
-          </PokemonContextProvider>
-        </AuthContextProvider>
-      </Router> */}
-
-      {token === "null" ? (
+      
+      {token === "null" || !token ? (
         <Router>
           <AuthContextProvider>
             {window.location.pathname == "/login" ? (
@@ -101,23 +86,7 @@ const App = () => {
         </Router>
       )}
 
-      {/* {token ?? (
-        <Router>
-          <Switch>
-            <AuthContextProvider>
-            <Login path="/login" component={Login} />
-            <CreateUser path="/createuser" component={CreateUser} />
-              <NavBar />
-              <PokemonContextProvider>
-                <Route path="/" exact component={Inicio} />
-                <Route path="/pokemon" component={Pokemon} />
-                <Route path="/items" component={Items} />
-                <Route path="/chat" component={Chat} />
-              </PokemonContextProvider>
-            </AuthContextProvider>
-          </Switch>
-        </Router>
-      )} */}
+      {/* si userAuth (usuario de firebase) es válido renderiza la app sino solo el ingreso */}
 
       {/* {userAuth ? (
         <Router>
