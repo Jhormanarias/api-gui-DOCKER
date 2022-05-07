@@ -1,35 +1,34 @@
-import React , { useContext } from "react";
+import React, { useContext } from "react";
 import { PokemonContext } from "../../../contexts/PokemonContext";
 import { EncabezadoChat } from "./EncabezadoChat";
 import { Messages } from "./Messages";
 import { SendMessage } from "./SendMessage";
 
-
-export const ChatScreen = ({chatActivo}) => {
-
-  const [{messagesState, messages},{}] = useContext(PokemonContext)
-
-
-  /* messages.map(message => {
-    console.log(message);
-  }) */
-
-  /* messagesState.messages.map(message => {
-    console.log(message.message);
-  }) */
-
-  //console.log(messages);
+export const ChatScreen = ({ chatActivo }) => {
+  const [{ messagesState, messages }, {}] = useContext(PokemonContext);
 
   return (
     <div className=" col-md-9 chatScreen">
-      <EncabezadoChat chatActivo={chatActivo} />
+      {chatActivo === null ? (
+        <>
+        <h1>Bienvenido <i class="fa-solid fa-face-laugh-beam"></i></h1>
+        </>
+      ) : (
+        <>
+          <EncabezadoChat chatActivo={chatActivo} />
 
-      {messagesState.messages.map(message => (
-        <Messages  textMessage={message.message} emisorMessage={message.emisor} /* messageTime={message.createdAt} */ />
-      ))}
+          {messagesState.messages.map((message) => (
+            <Messages
+              textMessage={message.message}
+              emisorMessage={
+                message.emisor
+              } /* messageTime={message.createdAt} */
+            />
+          ))}
 
-      
-      <SendMessage />
+          <SendMessage />
+        </>
+      )}
     </div>
   );
 };

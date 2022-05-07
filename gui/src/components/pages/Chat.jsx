@@ -7,10 +7,6 @@ import { UserInfoChat } from "./components/UserInfoChat";
 export const Chat = () => {
   const [{ users, chatActivo }, {setchatActivo}] = useContext(PokemonContext);
 
-
-  let JSONuserName = JSON.stringify(users.users);
-  let userName = JSON.parse(JSONuserName);
-
   return (
     <div className="container-fluid pt-3 chat">
       <div className="row justify-content-center">
