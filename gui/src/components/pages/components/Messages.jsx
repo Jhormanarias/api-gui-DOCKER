@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { PokemonContext } from "../../../contexts/PokemonContext";
 
 
-export const Messages = ({textMessage, emisorMessage, /* messageTime */}) => {
+export const Messages = ({textMessage, emisorMessage, status, /* messageTime */}) => {
   
   const [{messagesState, uid},{}] = useContext(PokemonContext)
 
@@ -23,7 +23,7 @@ export const Messages = ({textMessage, emisorMessage, /* messageTime */}) => {
         />
         <div className="squareMessage">
           {/* <h6 className="d-md-block">{emisorMessage}</h6 > */}
-          <p>{textMessage}</p>
+          <p>{textMessage} {status} {emisorMessage===uid && (status==='leido' ? <i class="fa-solid fa-circle-check"></i> : <i class="fa-regular fa-circle-check"></i> )} {/* <i class="fa-regular fa-circle-check"></i>   <i class="fa-solid fa-circle-check"></i> */}</p>
           {/* <p className="fechaSquareMessage justify-content-sm-end"><small>{dateString} {timenow}</small></p> */}
         </div>
       </div>

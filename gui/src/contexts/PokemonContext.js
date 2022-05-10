@@ -16,6 +16,7 @@ import {
   limitToLast,
   serverTimestamp,
   addDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
@@ -106,7 +107,6 @@ export const PokemonContextProvider = ({ children }) => {
         .get(`https://pokeapi.co/api/v2/pokemon/${pokemos.searchtext}`)
         .then(({ data }) => {
           let array = [data.species];
-          console.log(data);
           setpokemos({
             ...pokemos,
             pokemons: array,
@@ -337,7 +337,6 @@ export const PokemonContextProvider = ({ children }) => {
         text: "Post subido correctamente :)",
         timer: "5000",
       });
-      console.log(post);
       setpost({
         ...post,
         title: "",
@@ -528,6 +527,7 @@ export const PokemonContextProvider = ({ children }) => {
       message: newMessage.text,
       receptor,
       createdAt: serverTimestamp(),
+      status: "enviado",
     });
 
     const ChatCollection2 = collection(
@@ -539,6 +539,7 @@ export const PokemonContextProvider = ({ children }) => {
       message: newMessage.text,
       receptor,
       createdAt: serverTimestamp(),
+      status: "enviado",
     });
     setsendMessageState({ ...sendMessageState, sendMessage: "" });
   };
@@ -556,23 +557,20 @@ export const PokemonContextProvider = ({ children }) => {
         limitToLast(25)
       );
       const unsub = onSnapshot(q, (querySnapshot) => {
-        console.log(querySnapshot.docs);
         if (querySnapshot.docs === []) {
-        setmessagesState({...messagesState, messages: []});
-        }
-        else
-        {
+          setmessagesState({ ...messagesState, messages: [] });
+        } else {
           let docs = querySnapshot.docs.map((doc) => ({
             ...doc.data(),
             id: doc.id,
           }));
-          setmessagesState({...messagesState, messages: docs});
+          setmessagesState({ ...messagesState, messages: docs });
         }
-        
       });
-
-    } 
+    }
   }, [chatActivo]);
+
+  console.log(messagesState);
 
   //Consulta que me trae toda la coleccion de mensajes-----------------------------------
 
@@ -622,6 +620,62 @@ export const PokemonContextProvider = ({ children }) => {
   }, [notifications]);
   //Notificaciones----------------------------------------------------------------------
 
+  const onclickChatMessagesStatus = () => {
+    
+    messagesState.messages.map((docMap) => {
+      //console.log(docMap.emisor);
+      if (docMap.receptor===uid) {
+        if (docMap.status === "leido") {
+          console.log(docMap);
+          const docRef = doc(
+            firestore,
+            `chats/${receptor}-${uid}/mensajes/${docMap.id}`
+          );
+          //console.log(docRef);
+          updateDoc(docRef, {
+            status: "leido",
+          });
+          /* const docRef2 = doc(
+            firestore,
+            `chats/${uid}-${receptor}/mensajes/${docMap.id}`
+          );
+          //console.log(docRef);
+          updateDoc(docRef2, {
+            status: "leido",
+          }); */
+          console.log('estado leido');
+        }
+        //console.log('leido');
+      //console.log(docMap);
+      }
+      //console.log(docMap);
+      
+      
+      /* if (doc.status==='enviado') {
+      //setmessagesState({...messagesState,messages:{status: 'leido'}})
+      const docRef = doc(
+        firestore,
+        `chats/${uid}-${receptor}/mensajes/`,
+        `${doc.id}`
+      );
+      updateDoc(docRef, {
+        status: 'leido',
+      }); */
+
+      /* const ChatCollection2 = getDoc(
+        firestore,
+        `chats/${receptor}-${uid}/mensajes/${doc.id}`
+      );
+      updateDoc(ChatCollection2, {
+        status: 'leido',
+      }); */
+      //swal('enviado');
+      //setsendMessageState({ ...sendMessageState, sendMessage: "" });
+      //}
+      //setmessagesState({...messagesState.messages, status: 'leido'})
+    });
+  };
+
   return (
     <PokemonContext.Provider
       value={[
@@ -658,6 +712,7 @@ export const PokemonContextProvider = ({ children }) => {
           onCLickSendMessage,
           setchatActivo,
           setreceptor,
+          onclickChatMessagesStatus,
         },
       ]}
     >

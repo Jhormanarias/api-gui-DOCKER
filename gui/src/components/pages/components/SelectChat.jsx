@@ -2,11 +2,12 @@ import React , { useContext } from "react";
 import { PokemonContext } from "../../../contexts/PokemonContext";
 
 export const SelectChat = ({id, nameChat, setchatActivo}) => {
-  const [{ }, {setreceptor}] = useContext(PokemonContext)
+  const [{ }, {setreceptor, onclickChatMessagesStatus}] = useContext(PokemonContext)
 
   const handleSelectChat = ()=>{
     setchatActivo(nameChat);
     setreceptor(id);
+    onclickChatMessagesStatus();
   }
 
   return (

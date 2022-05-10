@@ -20,9 +20,9 @@ export const ChatScreen = ({ chatActivo }) => {
           {messagesState.messages.map((message) => (
             <Messages
               textMessage={message.message}
-              emisorMessage={
-                message.emisor
-              } /* messageTime={message.createdAt} */
+              emisorMessage={message.emisor}
+              status={message.status}
+               /* messageTime={message.createdAt} */
             />
           ))}
 
