@@ -7,7 +7,7 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Exception;
-
+use Illuminate\Support\Facades\Log;
 
 abstract class ResourceController extends Controller
 {
@@ -72,7 +72,21 @@ abstract class ResourceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        /* try{
+            $model = $this->model::find($id);
+            $picture = $model->picture;
+            Log::info('$Picture => '. $picture);
+            $model->save();
+        //return successful response
+        return response()->json(['user' => $model, 'message' => 'UPDATED'], 201);}
+        catch(\Exception $e){
+            return response()->json(
+                [
+                    'message' => $e,
+                ],
+                422
+            );
+        } */
     }
 
     /**

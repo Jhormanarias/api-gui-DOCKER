@@ -17,7 +17,8 @@ class Comment extends Model
 
     protected $dates = ['deleted_at'];
 
-    public function comentarios(){
+    public function comentarios()
+    {
         return $this->hasMany(Comment::class, 'comment_id');
     }
     
