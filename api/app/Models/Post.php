@@ -19,4 +19,9 @@ class Post extends Model
     public function comentarios(){
         return $this->hasMany(Comment::class, 'post_id')->whereNull('comment_id');
     }
+
+    public function picture()
+    {
+        return $this->morphOne(Picture::class, 'pictureable');
+    }
 }

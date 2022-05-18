@@ -1,8 +1,10 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
+import { PokemonContext } from "../../../contexts/PokemonContext";
 
 export const UserInfoChat = () => {
   const [{ user }, {}] = useContext(AuthContext);
+  const [{}, {onClickUploadImage}] = useContext(PokemonContext);
 
   let JSONuserName = JSON.stringify(user.user.name);
   let userName = JSON.parse(JSONuserName);
@@ -18,6 +20,13 @@ export const UserInfoChat = () => {
           </em>
         </small>
       </p>
+      <p>Cambiar foto de perfil</p>
+      <div class="input-group mb-3">
+        <input type="file" class="form-control" accept="image/*"/>
+        <button class="input-group-text" for="inputGroupFile02" onClick={(e)=>{onClickUploadImage(e)}}>
+          Upload
+        </button>
+      </div>
     </figure>
   );
 };

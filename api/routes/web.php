@@ -26,6 +26,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get("getUser", "AuthController@user");
     $router->post("createuser", "UserController@store");
     $router->post("createpictureprofile/{id}", "UserController@addPicture");
+    $router->post("createpicturepost/{id}", "PostController@addPicture");
     $router->get("allposts", "PostController@index");
     $router->get("post/{id}", "PostController@show");
     $router->post("createpost", "PostController@store");

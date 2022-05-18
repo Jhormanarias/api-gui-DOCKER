@@ -676,6 +676,58 @@ export const PokemonContextProvider = ({ children }) => {
     });
   };
 
+  //Para subir imagen----------------------------------------------------------------------
+
+  const postImage = async ({image})=>{
+    return axiosClient()
+    .post(`/createpictureprofile/1`, {
+      image
+    })
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((e) => {
+      if (e.response.status == 422) {
+        let dataArray = Object.keys(e.response.data);
+
+        let concatMessage = "";
+
+        const concatObjectError = () => {
+          dataArray.forEach((field) => {
+            concatMessage = concatMessage + "\n" + e.response.data[field][0];
+          });
+        };
+        concatObjectError();
+        swal({
+          icon: "error",
+          title: "Oops...",
+          text: `${concatMessage}`,
+          timer: "5000",
+        });
+      } else if (e.response.status == 401) {
+        swal({
+          title: "Error!",
+          text: e.response.data.message,
+          icon: "error",
+        });
+      } else {
+        swal({
+          title: "Error!",
+          text: "Algo salio mal en la llamada al servidor",
+          icon: "error",
+        });
+      }
+    });
+  }
+
+
+  const onClickUploadImage = async(e)=>{
+    console.log(e.target);
+  };
+
+  //Para subir imagen----------------------------------------------------------------------
+
+
   return (
     <PokemonContext.Provider
       value={[
@@ -713,6 +765,7 @@ export const PokemonContextProvider = ({ children }) => {
           setchatActivo,
           setreceptor,
           onclickChatMessagesStatus,
+          onClickUploadImage,
         },
       ]}
     >

@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Contracts\DocumentableContractController;
+use App\Http\Controllers\Contracts\DocumentableController;
 use App\Http\Controllers\ResourceController;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
 
-class PostController extends ResourceController
+class PostController extends ResourceController implements DocumentableContractController
 {
+    use DocumentableController;
     protected $model = Post::class;
 
 

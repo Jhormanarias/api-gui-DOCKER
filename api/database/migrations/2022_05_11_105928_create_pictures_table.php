@@ -15,8 +15,9 @@ class CreatePicturesTable extends Migration
     {
         Schema::create('pictures', function (Blueprint $table) {
             $table->id();
-            $table->string('fileName')->nullable();
-            $table->string('fileWeight')->nullable();
+            $table->string('file_name')->nullable();
+            $table->string('file_extension')->nullable();
+            $table->string('file_size_Mb')->nullable();
 
             $table->morphs('pictureable');
 

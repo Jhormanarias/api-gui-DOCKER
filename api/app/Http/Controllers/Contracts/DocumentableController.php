@@ -23,7 +23,7 @@ trait DocumentableController
 
             //obtenemos el nombre del archivo
             $fileExtension = $file->getClientOriginalExtension();
-            $fileName = 'UserProfile_'.$model->name.'.'.$fileExtension;
+            $fileName = rand(1,1000).$file->getClientOriginalName();
 
 
             //Obtenemos el peso del archivo
@@ -31,7 +31,7 @@ trait DocumentableController
             $fileSizeMegaBytes = number_format($fileSizeBytes / 1048576,2) . ' Mb';
             
             if ($request->hasFile('photo')) {
-                $model->picture()->create(['fileName'=>$fileName, 'fileWeight'=> $fileSizeMegaBytes]);
+                $model->picture()->create(['file_name'=>$fileName , 'file_extension'=> $fileExtension , 'file_size_Mb'=> $fileSizeMegaBytes ]);
                 
                 //indicamos el destino en el que guardaremos la imagen
                 

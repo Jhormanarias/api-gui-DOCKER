@@ -9,7 +9,7 @@ class Picture extends Model
 
     protected $table = 'pictures';
 
-    protected $fillable = ['fileName', 'fileWeight'];
+    protected $fillable = ['file_name', 'file_extension' , 'file_size_Mb' ];
 
 
     public function pictureable()
