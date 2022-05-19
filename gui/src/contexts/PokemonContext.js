@@ -81,6 +81,7 @@ export const PokemonContextProvider = ({ children }) => {
     initialState.notifications
   );
   const [photo, setphoto] = useState(null);
+  const [urlPhotoProfile, seturlPhotoProfile] = useState(null)
 
   useEffect(async () => {
     //Solo se va a ejecutar la peticion cuando el estado pokemon aún no haya cargado
@@ -732,9 +733,59 @@ export const PokemonContextProvider = ({ children }) => {
     }
   };
 
-  console.log(user);
-
   //Para subir imagen----------------------------------------------------------------------
+
+  //Obtener imagen-------------------------------------------------------------------------
+
+  const getImage = async ()=>{
+    return axiosClient()
+      .get(`/getPhotoProfile`)
+      .then(({data}) => {
+        console.log(data);
+        seturlPhotoProfile(null);
+        return data;
+      })
+      .catch((e) => {
+        if (e.response.status == 422) {
+          let dataArray = Object.keys(e.response.data);
+
+          let concatMessage = "";
+
+          const concatObjectError = () => {
+            dataArray.forEach((field) => {
+              concatMessage = concatMessage + "\n" + e.response.data[field][0];
+            });
+          };
+          concatObjectError();
+          swal({
+            icon: "error",
+            title: "Oops...",
+            text: `${concatMessage}`,
+            timer: "5000",
+          });
+        } else if (e.response.status == 401) {
+          swal({
+            title: "Error!",
+            text: e.response.data.message,
+            icon: "error",
+          });
+        } else {
+          swal({
+            title: "Error!",
+            text: "Algo salio mal en la llamada al servidor",
+            icon: "error",
+          });
+        }
+      });
+  };
+
+  useEffect( async () => {
+    let getNamePhotoProfile = await getImage();
+    seturlPhotoProfile(`${process.env.REACT_APP_HOST_LUMEN_WITH_PREFIX}/images/${getNamePhotoProfile}`)
+  }, []);
+
+  //Obtener imagen-------------------------------------------------------------------------
+
 
   return (
     <PokemonContext.Provider
@@ -751,6 +802,7 @@ export const PokemonContextProvider = ({ children }) => {
           chatActivo,
           receptor,
           uid,
+          urlPhotoProfile
         },
         {
           setpokemos,

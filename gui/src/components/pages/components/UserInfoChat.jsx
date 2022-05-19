@@ -4,14 +4,14 @@ import { PokemonContext } from "../../../contexts/PokemonContext";
 
 export const UserInfoChat = () => {
   const [{ user }, {}] = useContext(AuthContext);
-  const [{}, {subirArchivos, onClickUploadImage}] = useContext(PokemonContext);
+  const [{urlPhotoProfile}, {subirArchivos, onClickUploadImage}] = useContext(PokemonContext);
 
   let JSONuserName = JSON.stringify(user.user.name);
   let userName = JSON.parse(JSONuserName);
 
   return (
     <figure className="text-end border-bottom">
-      <img src="./user.png" alt="user" width="64" height="64" />
+      <img src={urlPhotoProfile} alt="user" width="64" height="64" />
       <h5>{userName}</h5>
       <p>
         <small>

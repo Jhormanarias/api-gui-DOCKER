@@ -34,6 +34,7 @@ trait DocumentableController
                 //indicamos el destino en el que guardaremos la imagen
                 $destinationPath = storage_path('images');
                 $url = $request->file('photo')->move($destinationPath, $fileName);
+                //$url = Storage::url($image);
                 $model->picture()->create(
                     [
                         'file_name' => $fileName, 

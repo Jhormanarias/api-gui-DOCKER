@@ -41,5 +41,10 @@ class AuthController extends ResourceController
         return $user ?? null;
     }
 
-    
+    public function getPhotoProfile(Request $request)
+    {
+        $userPhotoProfile = $request->user()->picture->file_name;
+        Log::info('url: '. $request->user()->picture);
+        return $userPhotoProfile ?? null;
+    }
 }

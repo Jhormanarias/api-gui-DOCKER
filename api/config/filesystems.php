@@ -12,7 +12,6 @@ return[
         
     ],
     'links' => [
-        Storage::public_path('storage') => storage_path('app/public'),
-        Storage::public_path('images') => storage_path('app/images'),
+        Storage::public_path('images') => storage_path('images'),
     ],
 ];

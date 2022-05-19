@@ -51,12 +51,6 @@ class UserController extends ResourceController implements DocumentableContractC
         return parent::update($request, $id);
     }
 
-    public function getPhotoProfile(Request $request)
-    {
-        $user = User::find(1);
-        Log::info('request: ' . $request);
-        $photoProfile = $user->picture();
-        return $photoProfile ?? null;
-    }
+    
 
 }
