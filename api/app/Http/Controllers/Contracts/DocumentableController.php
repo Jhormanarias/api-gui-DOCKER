@@ -23,26 +23,26 @@ trait DocumentableController
 
             //obtenemos el nombre del archivo
             $fileExtension = $file->getClientOriginalExtension();
-            $fileName = rand(1,1000).$file->getClientOriginalName();
+            $fileName = rand(1, 1000) . $file->getClientOriginalName();
 
 
             //Obtenemos el peso del archivo
             $fileSizeBytes = $file->getSize();
-            $fileSizeMegaBytes = number_format($fileSizeBytes / 1048576,2) . ' Mb';
-            
+            $fileSizeMegaBytes = number_format($fileSizeBytes / 1048576, 2) . ' Mb';
+
             if ($request->hasFile('photo')) {
-                $model->picture()->create(['file_name'=>$fileName , 'file_extension'=> $fileExtension , 'file_size_Mb'=> $fileSizeMegaBytes ]);
-                
                 //indicamos el destino en el que guardaremos la imagen
-                
                 $destinationPath = storage_path('images');
-                $request->file('photo')->move($destinationPath, $fileName);
-                Log::info('Extension: '. $fileExtension);
+                $url = $request->file('photo')->move($destinationPath, $fileName);
+                $model->picture()->create(
+                    [
+                        'file_name' => $fileName, 
+                        'file_extension' => $fileExtension, 
+                        'file_size_Mb' => $fileSizeMegaBytes, 
+                        'url' => $url
+                    ]
+                );
             }
-
-            //$model = $this->model::find($id);
-            //$model->picture()->create($request->all());
-
 
             //return successful response
             return $model;

@@ -11,7 +11,7 @@ export const ChatScreen = ({ chatActivo }) => {
     <div className=" col-md-9 chatScreen">
       {chatActivo === null ? (
         <>
-        <h1>Bienvenido <i class="fa-solid fa-face-laugh-beam"></i></h1>
+        <h1>Bienvenido <i className="fa-solid fa-face-laugh-beam"></i></h1>
         </>
       ) : (
         <>

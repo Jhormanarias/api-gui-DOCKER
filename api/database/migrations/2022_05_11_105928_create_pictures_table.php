@@ -21,6 +21,8 @@ class CreatePicturesTable extends Migration
 
             $table->morphs('pictureable');
 
+            $table->string('url');
+
             //$table->unsignedBigInteger('user_id');
             //$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 

@@ -24,6 +24,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     // Matches "/api/register
     $router->post('login', 'AuthController@login');
     $router->get("getUser", "AuthController@user");
+    $router->get("getPhotoProfile", "UserController@getPhotoProfile");
     $router->post("createuser", "UserController@store");
     $router->post("createpictureprofile/{id}", "UserController@addPicture");
     $router->post("createpicturepost/{id}", "PostController@addPicture");

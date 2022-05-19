@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 //import auth facades
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends ResourceController
 {
@@ -36,6 +37,9 @@ class AuthController extends ResourceController
     public function user(Request $request)
     {
         $user = $request->user();
+        Log::info('request: '. $request->user());
         return $user ?? null;
     }
+
+    
 }

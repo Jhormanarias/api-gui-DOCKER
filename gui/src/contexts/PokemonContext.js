@@ -80,6 +80,7 @@ export const PokemonContextProvider = ({ children }) => {
   const [notifications, setnotifications] = useState(
     initialState.notifications
   );
+  const [photo, setphoto] = useState(null);
 
   useEffect(async () => {
     //Solo se va a ejecutar la peticion cuando el estado pokemon aún no haya cargado
@@ -621,10 +622,9 @@ export const PokemonContextProvider = ({ children }) => {
   //Notificaciones----------------------------------------------------------------------
 
   const onclickChatMessagesStatus = () => {
-    
     messagesState.messages.map((docMap) => {
       //console.log(docMap.emisor);
-      if (docMap.receptor===uid) {
+      if (docMap.receptor === uid) {
         if (docMap.status === "leido") {
           console.log(docMap);
           const docRef = doc(
@@ -643,14 +643,13 @@ export const PokemonContextProvider = ({ children }) => {
           updateDoc(docRef2, {
             status: "leido",
           }); */
-          console.log('estado leido');
+          console.log("estado leido");
         }
         //console.log('leido');
-      //console.log(docMap);
+        //console.log(docMap);
       }
       //console.log(docMap);
-      
-      
+
       /* if (doc.status==='enviado') {
       //setmessagesState({...messagesState,messages:{status: 'leido'}})
       const docRef = doc(
@@ -678,55 +677,64 @@ export const PokemonContextProvider = ({ children }) => {
 
   //Para subir imagen----------------------------------------------------------------------
 
-  const postImage = async ({image})=>{
+  const postImage = async ( image ) => {
     return axiosClient()
-    .post(`/createpictureprofile/1`, {
-      image
-    })
-    .then(({ data }) => {
-      return data;
-    })
-    .catch((e) => {
-      if (e.response.status == 422) {
-        let dataArray = Object.keys(e.response.data);
+      .post(`/createpictureprofile/${user.user.id}`, image)
+      .then((data) => {
+        return data;
+      })
+      .catch((e) => {
+        if (e.response.status == 422) {
+          let dataArray = Object.keys(e.response.data);
 
-        let concatMessage = "";
+          let concatMessage = "";
 
-        const concatObjectError = () => {
-          dataArray.forEach((field) => {
-            concatMessage = concatMessage + "\n" + e.response.data[field][0];
+          const concatObjectError = () => {
+            dataArray.forEach((field) => {
+              concatMessage = concatMessage + "\n" + e.response.data[field][0];
+            });
+          };
+          concatObjectError();
+          swal({
+            icon: "error",
+            title: "Oops...",
+            text: `${concatMessage}`,
+            timer: "5000",
           });
-        };
-        concatObjectError();
-        swal({
-          icon: "error",
-          title: "Oops...",
-          text: `${concatMessage}`,
-          timer: "5000",
-        });
-      } else if (e.response.status == 401) {
-        swal({
-          title: "Error!",
-          text: e.response.data.message,
-          icon: "error",
-        });
-      } else {
-        swal({
-          title: "Error!",
-          text: "Algo salio mal en la llamada al servidor",
-          icon: "error",
-        });
-      }
-    });
-  }
-
-
-  const onClickUploadImage = async(e)=>{
-    console.log(e.target);
+        } else if (e.response.status == 401) {
+          swal({
+            title: "Error!",
+            text: e.response.data.message,
+            icon: "error",
+          });
+        } else {
+          swal({
+            title: "Error!",
+            text: "Algo salio mal en la llamada al servidor",
+            icon: "error",
+          });
+        }
+      });
   };
 
-  //Para subir imagen----------------------------------------------------------------------
+  const onClickUploadImage = (image) => {
 
+    if (!image) {
+      swal('nada seleccionado');
+      return false;
+    }
+
+    let photoForm = new FormData();
+    photoForm.append('photo', image);
+    let postImageOk = postImage(photoForm);
+    if (postImageOk) {
+      swal("Imagen insertada correctamente");
+    }
+  };
+
+  console.log(user);
+
+  //Para subir imagen----------------------------------------------------------------------
 
   return (
     <PokemonContext.Provider

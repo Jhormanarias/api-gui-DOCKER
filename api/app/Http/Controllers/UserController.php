@@ -51,43 +51,12 @@ class UserController extends ResourceController implements DocumentableContractC
         return parent::update($request, $id);
     }
 
-
-    public function photoProfile(Request $request)
+    public function getPhotoProfile(Request $request)
     {
-        /* try{
-            $model = new $this->model();
-            $this->validate($request, [
-                'id' => 'numeric'
-            ]);
-            Log::info('modelo: '. $model);
-            $model->save($request);
-        //return successful response
-        return response()->json(['user' => $model, 'message' => 'CREATED'], 201);}
-        catch(\Exception $e){
-            return response()->json(
-                [
-                    'message' => $e,
-                ],
-                422
-            );
-        } */
-
-
-
-
-        /* $userProfile = User::find(3);
-        $userProfile->picture->save(['fileName' => 'fileTest.jpg', 'fileWeight'=> '245kb']);
-
-        return response()->json(['user' => $userProfile, 'message' => 'UPDATED'], 201); */
-
-        /* $comentario = new Comment;
-        $comentario->id=$request->id;
-        $comentario->comment=$request->comment;
-        $comentario->comment_id=$request->comment_id;
-        $comentario->post_id=$request->post_id;
-        $comentario->user_id=$request->user_id;
-        $comentario->save();
-        return response()->json($request); */
+        $user = User::find(1);
+        Log::info('request: ' . $request);
+        $photoProfile = $user->picture();
+        return $photoProfile ?? null;
     }
 
 }

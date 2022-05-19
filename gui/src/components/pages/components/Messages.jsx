@@ -23,7 +23,7 @@ export const Messages = ({textMessage, emisorMessage, status, /* messageTime */}
         />
         <div className="squareMessage">
           {/* <h6 className="d-md-block">{emisorMessage}</h6 > */}
-          <p>{textMessage} {status} {emisorMessage===uid && (status==='leido' ? <i class="fa-solid fa-circle-check"></i> : <i class="fa-regular fa-circle-check"></i> )} {/* <i class="fa-regular fa-circle-check"></i>   <i class="fa-solid fa-circle-check"></i> */}</p>
+          <p>{textMessage} {status} {emisorMessage===uid && (status==='leido' ? <i className="fa-solid fa-circle-check"></i> : <i className="fa-regular fa-circle-check"></i> )} {/* <i className="fa-regular fa-circle-check"></i>   <i className="fa-solid fa-circle-check"></i> */}</p>
           {/* <p className="fechaSquareMessage justify-content-sm-end"><small>{dateString} {timenow}</small></p> */}
         </div>
       </div>

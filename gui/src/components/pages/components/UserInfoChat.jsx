@@ -4,7 +4,7 @@ import { PokemonContext } from "../../../contexts/PokemonContext";
 
 export const UserInfoChat = () => {
   const [{ user }, {}] = useContext(AuthContext);
-  const [{}, {onClickUploadImage}] = useContext(PokemonContext);
+  const [{}, {subirArchivos, onClickUploadImage}] = useContext(PokemonContext);
 
   let JSONuserName = JSON.stringify(user.user.name);
   let userName = JSON.parse(JSONuserName);
@@ -21,11 +21,8 @@ export const UserInfoChat = () => {
         </small>
       </p>
       <p>Cambiar foto de perfil</p>
-      <div class="input-group mb-3">
-        <input type="file" class="form-control" accept="image/*"/>
-        <button class="input-group-text" for="inputGroupFile02" onClick={(e)=>{onClickUploadImage(e)}}>
-          Upload
-        </button>
+      <div className="input-group mb-3">
+        <input type="file" name="photo" className="form-control" accept="image/*" onChange={(e)=>onClickUploadImage(e.target.files[0])}/>
       </div>
     </figure>
   );
