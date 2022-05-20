@@ -22,6 +22,7 @@ export const ChatScreen = ({ chatActivo }) => {
               textMessage={message.message}
               emisorMessage={message.emisor}
               status={message.status}
+              image={message.image}
                /* messageTime={message.createdAt} */
             />
           ))}

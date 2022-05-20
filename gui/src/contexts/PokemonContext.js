@@ -18,6 +18,7 @@ import {
   addDoc,
   updateDoc,
 } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
 const initialState = {
@@ -58,6 +59,7 @@ const initialState = {
 
 //FireStore---------------------------------------------------------------------
 const firestore = getFirestore(appFirebase);
+const storage = getStorage(appFirebase);
 //FireStore---------------------------------------------------------------------
 
 export const PokemonContext = createContext([]);
@@ -81,7 +83,8 @@ export const PokemonContextProvider = ({ children }) => {
     initialState.notifications
   );
   const [photo, setphoto] = useState(null);
-  const [urlPhotoProfile, seturlPhotoProfile] = useState(null)
+  const [urlPhotoProfile, seturlPhotoProfile] = useState(null);
+  const [urlSendImage, seturlSendImage] = useState(null);
 
   useEffect(async () => {
     //Solo se va a ejecutar la peticion cuando el estado pokemon aún no haya cargado
@@ -572,8 +575,6 @@ export const PokemonContextProvider = ({ children }) => {
     }
   }, [chatActivo]);
 
-  console.log(messagesState);
-
   //Consulta que me trae toda la coleccion de mensajes-----------------------------------
 
   //Consulta que me trae toda la coleccion de usuarios-----------------------------------
@@ -678,7 +679,7 @@ export const PokemonContextProvider = ({ children }) => {
 
   //Para subir imagen----------------------------------------------------------------------
 
-  const postImage = async ( image ) => {
+  const postImage = async (image) => {
     return axiosClient()
       .post(`/createpictureprofile/${user.user.id}`, image)
       .then((data) => {
@@ -719,14 +720,13 @@ export const PokemonContextProvider = ({ children }) => {
   };
 
   const onClickUploadImage = (image) => {
-
-    if (!image) {
-      swal('nada seleccionado');
+    if (!image.target.files[0]) {
+      swal("nada seleccionado");
       return false;
     }
 
     let photoForm = new FormData();
-    photoForm.append('photo', image);
+    photoForm.append("photo", image.target.files[0]);
     let postImageOk = postImage(photoForm);
     if (postImageOk) {
       swal("Imagen insertada correctamente");
@@ -737,11 +737,10 @@ export const PokemonContextProvider = ({ children }) => {
 
   //Obtener imagen-------------------------------------------------------------------------
 
-  const getImage = async ()=>{
+  const getImage = async () => {
     return axiosClient()
       .get(`/getPhotoProfile`)
-      .then(({data}) => {
-        console.log(data);
+      .then(({ data }) => {
         seturlPhotoProfile(null);
         return data;
       })
@@ -779,13 +778,57 @@ export const PokemonContextProvider = ({ children }) => {
       });
   };
 
-  useEffect( async () => {
+  useEffect(async () => {
     let getNamePhotoProfile = await getImage();
-    seturlPhotoProfile(`${process.env.REACT_APP_HOST_LUMEN_WITH_PREFIX}/images/${getNamePhotoProfile}`)
+    seturlPhotoProfile(
+      `${process.env.REACT_APP_HOST_LUMEN_WITH_PREFIX}/images/${getNamePhotoProfile}`
+    );
   }, []);
 
   //Obtener imagen-------------------------------------------------------------------------
 
+  //Mandar imagenes Chat-------------------------------------------------------------------
+
+  const random = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  };
+
+  const onClickSendImage = (e) => {
+    const storageRef = ref(storage, `${random(1, 1000)}-${uid}-${receptor}`);
+    let file = e.target.files[0];
+    //Sube la imagen
+    uploadBytes(storageRef, file).then((snapshot) => {
+      //Descarga url para mostrar las imagenes después de haber subido la imagen
+      getDownloadURL(storageRef).then((url) => {
+        const ChatCollection = collection(
+          firestore,
+          `chats/${uid}-${receptor}/mensajes`
+        );
+        addDoc(ChatCollection, {
+          emisor: uid,
+          message: 'image',
+          image: url,
+          receptor,
+          createdAt: serverTimestamp(),
+          status: "enviado",
+        });
+
+        const ChatCollection2 = collection(
+          firestore,
+          `chats/${receptor}-${uid}/mensajes`
+        );
+        addDoc(ChatCollection2, {
+          emisor: uid,
+          message: 'image',
+          image: url,
+          receptor,
+          createdAt: serverTimestamp(),
+          status: "enviado",
+        });
+      });
+    });
+  };
+  //Mandar imagenes Chat-------------------------------------------------------------------
 
   return (
     <PokemonContext.Provider
@@ -802,7 +845,7 @@ export const PokemonContextProvider = ({ children }) => {
           chatActivo,
           receptor,
           uid,
-          urlPhotoProfile
+          urlPhotoProfile,
         },
         {
           setpokemos,
@@ -826,6 +869,7 @@ export const PokemonContextProvider = ({ children }) => {
           setreceptor,
           onclickChatMessagesStatus,
           onClickUploadImage,
+          onClickSendImage,
         },
       ]}
     >

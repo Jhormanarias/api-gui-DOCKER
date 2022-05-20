@@ -37,14 +37,15 @@ class AuthController extends ResourceController
     public function user(Request $request)
     {
         $user = $request->user();
-        Log::info('request: '. $request->user());
+        if($user){
+            $user->load('picture');
+        }
         return $user ?? null;
     }
 
     public function getPhotoProfile(Request $request)
     {
         $userPhotoProfile = $request->user()->picture->file_name;
-        Log::info('url: '. $request->user()->picture);
         return $userPhotoProfile ?? null;
     }
 }

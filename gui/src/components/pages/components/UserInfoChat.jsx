@@ -22,7 +22,7 @@ export const UserInfoChat = () => {
       </p>
       <p>Cambiar foto de perfil</p>
       <div className="input-group mb-3">
-        <input type="file" name="photo" className="form-control" accept="image/*" onChange={(e)=>onClickUploadImage(e.target.files[0])}/>
+        <input type="file" name="photo" className="form-control" accept="image/*" onChange={(e)=>onClickUploadImage(e)}/>
       </div>
     </figure>
   );
