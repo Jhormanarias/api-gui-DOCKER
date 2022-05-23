@@ -20,6 +20,7 @@ import {
 } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import moment from 'moment';
 
 const initialState = {
   pokemon: {
@@ -511,7 +512,7 @@ export const PokemonContextProvider = ({ children }) => {
       emisor: uid,
       message: newMessage.text,
       receptor,
-      createdAt: serverTimestamp(),
+      createdAt: moment().format('DD/MM/YYYY HH:mm:ss'),
       status: "enviado",
     });
 
@@ -523,7 +524,7 @@ export const PokemonContextProvider = ({ children }) => {
       emisor: uid,
       message: newMessage.text,
       receptor,
-      createdAt: serverTimestamp(),
+      createdAt: moment().format('DD/MM/YYYY HH:mm:ss'),
       status: "enviado",
     });
     setsendMessageState({ ...sendMessageState, sendMessage: "" });
@@ -554,6 +555,13 @@ export const PokemonContextProvider = ({ children }) => {
       });
     }
   }, [chatActivo]);
+
+  useEffect(() => {
+    console.log(messagesState.messages);
+    //console.log(dateTimeNow);
+    
+  }, [messagesState])
+  
 
   //Consulta que me trae toda la coleccion de mensajes-----------------------------------
 
@@ -787,7 +795,7 @@ export const PokemonContextProvider = ({ children }) => {
           message: 'image',
           image: url,
           receptor,
-          createdAt: serverTimestamp(),
+          createdAt: moment().format('DD/MM/YYYY HH:mm:ss'),
           status: "enviado",
         });
 
@@ -800,7 +808,7 @@ export const PokemonContextProvider = ({ children }) => {
           message: 'image',
           image: url,
           receptor,
-          createdAt: serverTimestamp(),
+          createdAt: moment().format('DD/MM/YYYY HH:mm:ss'),
           status: "enviado",
         });
       });

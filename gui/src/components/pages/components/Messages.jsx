@@ -10,15 +10,6 @@ export const Messages = ({
 }) => {
   const [{ messagesState, uid }, {}] = useContext(PokemonContext);
 
-  const timeDate = () => {
-    let date = new Date(
-      messageTime.seconds * 1000 + messageTime.nanoseconds / 1000000
-    );
-    var timenow = [date.getHours(), date.getMinutes()].join(":");
-    let dateString = date.toDateString();
-    return dateString + ' ' + timenow;
-  };
-
   return (
     <div className="col-md-12">
       <div
@@ -52,11 +43,11 @@ export const Messages = ({
               ))}{" "}
             {/* <i className="fa-regular fa-circle-check"></i>   <i className="fa-solid fa-circle-check"></i> */}
           </p>
-          {/* <p className="fechaSquareMessage justify-content-sm-end">
+          <p className="fechaSquareMessage justify-content-sm-end">
             <small>
-              {timeDate()}
+              {messageTime}
             </small>
-          </p> */}
+          </p>
         </div>
       </div>
     </div>
