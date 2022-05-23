@@ -15,7 +15,7 @@ export const Card = ()=>{
             {/* map recorre cada objeto que tiene pokemons */}
             {pokemos.pokemons.map(pokemon => {
                 return (
-                    <div id={"pokeCard_" + pokemon.name} className="col-md-4 mb-3 mt-3 card " pokemonsFilter={pokemon.name}>
+                    <div key={pokemon.name} id={"pokeCard_" + pokemon.name} className="col-md-4 mb-3 mt-3 card ">
                         <div className="card-body">
                             {/* Aquí traemos el nombre del pokemon */}
                             <h5 className="card-title">{pokemon.name}</h5>

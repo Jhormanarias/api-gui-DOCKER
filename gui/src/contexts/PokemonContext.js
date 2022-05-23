@@ -117,7 +117,6 @@ export const PokemonContextProvider = ({ children }) => {
             pokemons: array,
           });
         })
-        .catch((e) => console.log(e));
     }
     if (pokemos.searchtext.length === 0) {
       setpokemos({ ...pokemos, status: "Noloaded" });
@@ -135,7 +134,6 @@ export const PokemonContextProvider = ({ children }) => {
         return data.count;
       })
       .catch((e) => {
-        console.log(e);
         return e;
       });
   };
@@ -159,7 +157,6 @@ export const PokemonContextProvider = ({ children }) => {
   //Para cuando se elimina un pokemon-------------------------------------------------
   const functionPokemon = (pokemonName) => {
     let pokemonsWithout = pokemos.pokemons.filter((p) => p.name != pokemonName);
-    console.log(pokemonsWithout);
     setpokemos({
       ...pokemos,
       pokemons: pokemonsWithout,
@@ -227,20 +224,6 @@ export const PokemonContextProvider = ({ children }) => {
   };
   //FiltroNPokemon---------------------------------------------------------------------
 
-  //Esto es para saber si el localStorage esta disponible
-
-  /* if (typeof(Storage) !== "undefined") {
-      console.log('LocalStorage disponible');
-      // LocalStorage disponible
-  } else {
-      console.log('LocalStorage ---NO--- disponible');
-      // LocalStorage no soportado en este navegador
-  } */
-
-  // localStorage.setItem("Token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNjQ5NzA5MDMzLCJleHAiOjE2NDk3MTI2MzMsIm5iZiI6MTY0OTcwOTAzMywianRpIjoiTWdOalVxc3huTk90NjdsTSIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.lKyMc9C8WmHzjlRVqWSeH95NDwSteTTG0dMHAYPBTTw");
-
-  //console.log(localStorage.getItem('Token'));
-
   //Para obtener todos los post y comentarios-----------------------------------------
   const getPost = async () => {
     if (loginAuth) {
@@ -287,8 +270,6 @@ export const PokemonContextProvider = ({ children }) => {
         return data;
       })
       .catch((e) => {
-        /* console.log(e.response.data); */
-
         if (e.response.status == 422) {
           let dataArray = Object.keys(e.response.data);
 
@@ -512,7 +493,6 @@ export const PokemonContextProvider = ({ children }) => {
   //Input Message---------------------
   const onChangeSendMessage = (e) => {
     setsendMessageState({ ...sendMessageState, sendMessage: e.target.value });
-    console.log(sendMessageState);
   };
   //Input Message---------------------
 
@@ -628,7 +608,6 @@ export const PokemonContextProvider = ({ children }) => {
       //console.log(docMap.emisor);
       if (docMap.receptor === uid) {
         if (docMap.status === "leido") {
-          console.log(docMap);
           const docRef = doc(
             firestore,
             `chats/${receptor}-${uid}/mensajes/${docMap.id}`
@@ -645,7 +624,6 @@ export const PokemonContextProvider = ({ children }) => {
           updateDoc(docRef2, {
             status: "leido",
           }); */
-          console.log("estado leido");
         }
         //console.log('leido');
         //console.log(docMap);

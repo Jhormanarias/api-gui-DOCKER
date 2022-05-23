@@ -5,7 +5,7 @@ import { PokemonContext } from "../../../contexts/PokemonContext";
 
 
 //Export Component Busqueda---------------------------------------------------------------
-export const Busqueda = ({ pokemonsFilter }) => {
+export const Busqueda = () => {
   const [{ pokemos, searchPokemon }, { setpokemos, setsearchPokemon }] = useContext(PokemonContext)
   const handleChange = (e) => {
     setpokemos({
@@ -13,14 +13,11 @@ export const Busqueda = ({ pokemonsFilter }) => {
       searchtext: e.target.value
     })
     // let pokemonsWithout = pokemos.pokemons.filter(p=>p.name!=pokemonName);
-    let pokemonFilter = pokemos.pokemons.filter(p => p.name == pokemonsFilter);
-    // console.log(pokemonFilter);
-    console.log(e.target.value);
+    let pokemonFilter = pokemos.pokemons.filter(p => p.name == pokemos.searchtext);
   };
 
   const BuscaPokemonPrueba = (searchValue) => {
     setsearchPokemon(searchValue);
-    console.log(searchPokemon);
   }
 
 
@@ -30,7 +27,7 @@ export const Busqueda = ({ pokemonsFilter }) => {
         <input
           className='search form-control'
           type='search'
-          onChange={handleChange}
+          onChange={(e)=>{handleChange(e)}}
           value={pokemos.searchtext}
           placeholder="Search Pokemon"
         />

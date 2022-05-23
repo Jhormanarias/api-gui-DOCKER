@@ -20,10 +20,8 @@ const ModalCreatePost = () => {
       {openmodal && (
         <div
           className="modal fade show"
-          id="staticBackdrop"
           data-bs-backdrop="static"
           data-bs-keyboard="false"
-          tabindex="-1"
           aria-labelledby="staticBackdropLabel"
           aria-hidden="true"
           style={{ display: "block" }}
@@ -50,6 +48,8 @@ const ModalCreatePost = () => {
                     <input
                       type="text"
                       className="form-control"
+                      placeholder="Titulo"
+                      value={post.title}
                       aria-describedby="titulo"
                       onChange={(e) => setFieldPost(e.target.value, "title")}
                     />
@@ -57,6 +57,8 @@ const ModalCreatePost = () => {
                   <div className="mb-3">
                     <label className="form-label">Cuerpo del post</label>
                     <textarea
+                      placeholder="Cuerpo del post"
+                      value={post.body}
                       onChange={(e) => setFieldPost(e.target.value, "body")}
                       type="text-area"
                       className="form-control"

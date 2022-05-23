@@ -34,7 +34,6 @@ export const Inicio = () => {
       //peticion
     axios.get(`https://pokeapi.co/api/v2/pokemon?limit=${pokemos.limit}&offset=${pokemos.offsett}`)
     .then(({data}) => {
-      console.log(data);
     //let pokemosApi = data.results;
 
     //Asignamos el estado pokemon, 1 los pokemons que trajo de la petición
@@ -56,7 +55,6 @@ export const Inicio = () => {
       axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemos.searchtext}`)
       .then(({data})=>{
         let array = [data.species];
-        console.log(data);
         setpokemos({...pokemos,
         pokemons: array})
       })
@@ -85,13 +83,10 @@ const Busqueda = ({pokemonsFilter}) => {
     })
     // let pokemonsWithout = pokemos.pokemons.filter(p=>p.name!=pokemonName);
     let pokemonFilter = pokemos.pokemons.filter(p => p.name == pokemonsFilter);
-    // console.log(pokemonFilter);
-    console.log(e.target.value);
   };
 
   const BuscaPokemonPrueba = (searchValue) =>{
     setsearchPokemon(searchValue);
-    console.log(searchPokemon);
   }
 
 
@@ -101,7 +96,7 @@ const Busqueda = ({pokemonsFilter}) => {
       <input 
         className='search form-control'
         type='search' 
-        onChange={handleChange}
+        onChange={(e)=>{handleChange(e)}}
         value={pokemos.searchtext}
         placeholder="Search Pokemon"
     />
@@ -126,22 +121,14 @@ const Busqueda = ({pokemonsFilter}) => {
 const Button = ({ pokemonName }) => {
   const functionPokemon = ()=>{
     let pokemonsWithout = pokemos.pokemons.filter(p=>p.name!=pokemonName);
-    console.log(pokemonsWithout);
     setpokemos({...pokemos,
     pokemons: pokemonsWithout})
   }
   
-  
-  // const handleChange = e =>{
-    
-  //   console.log("botón eliminar presionado");
-
-  // }
  return (
    <button className="btn btn-danger"
    onClick={()=>functionPokemon()}>
      X
-     <icon setpokemos={setpokemos}></icon>
    </button>
  );
 };
@@ -192,7 +179,6 @@ const FiltroNpokemon = ()=>{
   ];
 
   const handleChange = (e)=>{
-    console.log(e.value);
     let selectValue = e.value;
     setpokemos({...pokemos,
       limit: selectValue,
@@ -301,12 +287,10 @@ const BtnAvanzar = () => {
             <BtnAvanzar />
             {pokemos.pokemons.map(pokemon=>{
               return(
-                    <div className="col-md-4 mb-5">
-                      <div id={"pokeCard_"+pokemon.name} pokemonsFilter={pokemon.name} >
+                    <div key={pokemon.name} className="col-md-4 mb-5">
+                      <div id={"pokeCard_"+pokemon.name} >
                         {/* Aquí traemos el nombre del pokemon */}
                         <h2>{pokemon.name}</h2>
-                        {/* Imprimimos en consola lo que trae pokemon */}
-                        {console.log(pokemon)}
                         {/* Aquí para la src de la imagen lo traemos de la we pokemondb y para saber que pokemon es le asignamos el nombre que anteriormente traimos */}
                         <img className="pokeImg" src={`https://img.pokemondb.net/artwork/large/${pokemon.name}.jpg`}></img>
                         <Button pokemonName={pokemon.name} />

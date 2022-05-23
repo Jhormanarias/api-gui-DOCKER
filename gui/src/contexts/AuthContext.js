@@ -94,9 +94,7 @@ export const AuthContextProvider = ({ children }) => {
     ).then((userFirebase) => {
       return userFirebase;
     });
-    console.log(userInfo.user.uid);
     const docRef = doc(firestore, `usuarios/${userInfo.user.uid}`);
-    console.log(docRef);
     setDoc(docRef, {
       name: user.name,
       email: user.email,

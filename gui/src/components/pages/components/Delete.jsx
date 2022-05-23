@@ -13,7 +13,6 @@ export const Delete = ({pokemonName}) => {
         <button className="btn btn-danger"
             onClick={() => functionPokemon(pokemonName)}>
             X
-            <icon setpokemos={setpokemos}></icon>
         </button>
     // {/* </div> */}
 
