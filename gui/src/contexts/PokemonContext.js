@@ -1,4 +1,10 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+} from "react";
 import axios from "axios";
 import axiosClient from "../contexts/axios/cliente";
 import swal from "sweetalert";
@@ -20,7 +26,8 @@ import {
 } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import moment from 'moment';
+import moment from "moment";
+import { Messages } from "../components/pages/components/Messages";
 
 const initialState = {
   pokemon: {
@@ -117,7 +124,7 @@ export const PokemonContextProvider = ({ children }) => {
             ...pokemos,
             pokemons: array,
           });
-        })
+        });
     }
     if (pokemos.searchtext.length === 0) {
       setpokemos({ ...pokemos, status: "Noloaded" });
@@ -512,7 +519,7 @@ export const PokemonContextProvider = ({ children }) => {
       emisor: uid,
       message: newMessage.text,
       receptor,
-      createdAt: moment().format('DD/MM/YYYY HH:mm:ss'),
+      createdAt: moment().format("DD/MM/YYYY HH:mm:ss"),
       status: "enviado",
     });
 
@@ -524,7 +531,7 @@ export const PokemonContextProvider = ({ children }) => {
       emisor: uid,
       message: newMessage.text,
       receptor,
-      createdAt: moment().format('DD/MM/YYYY HH:mm:ss'),
+      createdAt: moment().format("DD/MM/YYYY HH:mm:ss"),
       status: "enviado",
     });
     setsendMessageState({ ...sendMessageState, sendMessage: "" });
@@ -559,9 +566,7 @@ export const PokemonContextProvider = ({ children }) => {
   useEffect(() => {
     console.log(messagesState.messages);
     //console.log(dateTimeNow);
-    
-  }, [messagesState])
-  
+  }, [messagesState]);
 
   //Consulta que me trae toda la coleccion de mensajes-----------------------------------
 
@@ -792,10 +797,10 @@ export const PokemonContextProvider = ({ children }) => {
         );
         addDoc(ChatCollection, {
           emisor: uid,
-          message: 'image',
+          message: "image",
           image: url,
           receptor,
-          createdAt: moment().format('DD/MM/YYYY HH:mm:ss'),
+          createdAt: moment().format("DD/MM/YYYY HH:mm:ss"),
           status: "enviado",
         });
 
@@ -805,16 +810,40 @@ export const PokemonContextProvider = ({ children }) => {
         );
         addDoc(ChatCollection2, {
           emisor: uid,
-          message: 'image',
+          message: "image",
           image: url,
           receptor,
-          createdAt: moment().format('DD/MM/YYYY HH:mm:ss'),
+          createdAt: moment().format("DD/MM/YYYY HH:mm:ss"),
           status: "enviado",
         });
       });
     });
   };
   //Mandar imagenes Chat-------------------------------------------------------------------
+
+  //Auto-scroll------------------------------------------------------------------------------
+
+  
+
+  /* const useChatScroll = ()=>{
+    const dummy = useRef(<Messages/>);
+
+  useEffect(() => {
+    dummy.current.scrollIntoView({ behavior: 'smooth' });
+  }, [messagesState])
+  } */
+
+  /* const useChatScroll = () => {
+    const ref =
+      React.useRef <HTMLDivElement>
+      React.useEffect(() => {
+        if (ref.current) {
+          ref.current.scrollTop = ref.current.scrollHeight;
+        }
+      }, [dep]);
+    return ref;
+  }; */
+  //Auto-scroll------------------------------------------------------------------------------
 
   return (
     <PokemonContext.Provider

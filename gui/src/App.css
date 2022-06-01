@@ -28,6 +28,25 @@
   background-color: #282c34;
   color: #fff;
   min-height: 100%;
+  height: 100%;
+}
+
+.left-page{
+  height: 72vh;
+}
+
+.scrollSelectChat{
+  height: 70%;
+  overflow-y: scroll;
+}
+
+.scrollSelectChat::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollSelectChat::-webkit-scrollbar-thumb {
+  background-color: #1b1d20;
+  border-radius: 5px;
 }
 
 .selectChat:hover{
@@ -46,6 +65,22 @@
   background-color: #282c34;
   color: #fff;
   min-height: 88vh;
+  height: 88vh;
+}
+
+.chatScreenMessages{
+  height: 80%;
+  overflow-y: scroll;
+  padding: 1rem;
+}
+
+.chatScreenMessages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chatScreenMessages::-webkit-scrollbar-thumb {
+  background-color: #1b1d20;
+  border-radius: 5px;
 }
 
 .squareMessage{
@@ -71,4 +106,16 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.inputImage {
+  margin-left: 5px;
+}
+
+.inputImage input {
+  display: none;
+}
+
+.photoProfile{
+  border-radius: 50%;
 }

@@ -7,6 +7,7 @@ export const Messages = ({
   status,
   image,
   messageTime,
+  photoProfile,
 }) => {
   const [{ messagesState, uid }, {}] = useContext(PokemonContext);
 
@@ -20,7 +21,7 @@ export const Messages = ({
       >
         <img
           className="me-2"
-          src="./user.png"
+          src={emisorMessage === uid ? photoProfile : "./user.png"}
           alt="user"
           width="50"
           height="50"

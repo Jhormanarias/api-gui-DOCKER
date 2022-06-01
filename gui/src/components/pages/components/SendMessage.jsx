@@ -12,6 +12,11 @@ export const SendMessage = () => {
     },
   ] = useContext(PokemonContext);
 
+  const onClickUploadImage = (e) => {
+    document.getElementById("uploadImage").click();
+    e.preventDefault();
+  };
+
   return (
     <div className="align-items-end ">
       <form /* onSubmit={sendMessage} */>
@@ -25,6 +30,26 @@ export const SendMessage = () => {
               onChangeSendMessage(e);
             }}
           />
+          <div className="inputImage">
+            <button
+              className="btn btn-outline-secondary"
+              onClick={(e) => {
+                onClickUploadImage(e);
+              }}
+            >
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+            </button>
+            <input
+              name="photo"
+              id="uploadImage"
+              type="file"
+              accept="image/*"
+              className="form-control"
+              onChange={(e) => {
+                onClickSendImage(e);
+              }}
+            />
+          </div>
           <button
             className="btn btn-primary"
             type="button"
@@ -35,15 +60,6 @@ export const SendMessage = () => {
           >
             Enviar <i className="fa-solid fa-paper-plane"></i>
           </button>
-          <input
-            name="photo"
-            type="file"
-            accept="image/*"
-            className="form-control"
-            onChange={(e) => {
-              onClickSendImage(e);
-            }}
-          />
         </div>
       </form>
     </div>

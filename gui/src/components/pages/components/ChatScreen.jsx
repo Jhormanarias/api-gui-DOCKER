@@ -1,11 +1,19 @@
-import React, { useContext } from "react";
+import React, { useContext , useRef, useEffect } from "react";
 import { PokemonContext } from "../../../contexts/PokemonContext";
 import { EncabezadoChat } from "./EncabezadoChat";
 import { Messages } from "./Messages";
 import { SendMessage } from "./SendMessage";
 
 export const ChatScreen = ({ chatActivo }) => {
-  const [{ messagesState, messages }, {}] = useContext(PokemonContext);
+  const [{ messagesState, messages , urlPhotoProfile }, {}] = useContext(PokemonContext);
+
+  const dummy = useRef();
+
+  useEffect(() => {
+    if (messagesState) {
+    dummy.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messagesState.messages])
 
   return (
     <div className=" col-md-9 chatScreen">
@@ -17,6 +25,7 @@ export const ChatScreen = ({ chatActivo }) => {
         <>
           <EncabezadoChat chatActivo={chatActivo} />
 
+          <div className="chatScreenMessages">
           {messagesState.messages.map((message) => (
             <Messages
               key={message.id}
@@ -25,8 +34,13 @@ export const ChatScreen = ({ chatActivo }) => {
               status={message.status}
               image={message.image}
               messageTime={message.createdAt}
+              photoProfile={urlPhotoProfile}
             />
           ))}
+          <span ref={dummy}></span>
+          </div>
+
+          
 
           <SendMessage />
         </>
